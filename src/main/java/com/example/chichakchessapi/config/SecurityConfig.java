@@ -20,8 +20,8 @@ import java.util.List;
 public class SecurityConfig {
     @Value("${app.client.host}")
     private String clientHost;
-    @Value("${app.base-path}")
-    private String basePath;
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
 
     @Bean
     @Profile("local")
@@ -62,13 +62,13 @@ public class SecurityConfig {
                 )
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers(basePath + "/**")
+                        .ignoringRequestMatchers(contextPath + "/**")
                         .ignoringRequestMatchers("/health-check")
                         .ignoringRequestMatchers("/swagger-ui/**")
                         .ignoringRequestMatchers("/v3/api-docs/**")
                 )
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(basePath + "/**").permitAll()
+                        .requestMatchers(contextPath + "/**").permitAll()
                         .requestMatchers("/health-check").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()

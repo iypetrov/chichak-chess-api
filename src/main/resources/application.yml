@@ -1,7 +1,9 @@
 app:
-  base-path: /api/v@major.version@
   client:
     host: http://localhost:4200
+server:
+  servlet:
+    context-path: /api/v@major.version@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
