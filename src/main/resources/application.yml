@@ -1,8 +1,5 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/chessdb
-    username: admin
-    password: admin
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
