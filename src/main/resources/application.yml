@@ -1,6 +1,3 @@
-app:
-  client:
-    host: http://localhost:4200
 server:
   servlet:
     context-path: /api/v@major.version@

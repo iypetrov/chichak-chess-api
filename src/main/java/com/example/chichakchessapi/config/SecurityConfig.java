@@ -18,8 +18,6 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Value("${app.client.host}")
-    private String clientHost;
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
@@ -44,7 +42,7 @@ public class SecurityConfig {
                         .configurationSource(request -> {
                             CorsConfiguration corsConfiguration = new CorsConfiguration();
                             corsConfiguration.setAllowedOrigins(List.of(
-                                    clientHost
+                                    "http://localhost:4200"
                             ));
                             corsConfiguration.setAllowedMethods(List.of(
                                     HttpMethod.GET.name(),
