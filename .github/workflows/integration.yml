@@ -39,6 +39,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.IMAGE_NAME }}:${{ github.run_id }}
           target: build-stage
+          secret-envs: API_MAJOR_VERSION=0, API_MINOR_VERSION=0, API_PATCH_VERSION=0
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
@@ -65,7 +66,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run unit tests
-        run: docker run --rm ghcr.io/${{ env.IMAGE_NAME }}:${{ github.run_id }} mvn test-compile surefire:test
+        run: |
+          docker run --rm -e API_MAJOR_VERSION=0 \
+                          -e API_MINOR_VERSION=0 \
+                          -e API_PATCH_VERSION=0 \
+                          ghcr.io/${{ env.IMAGE_NAME }}:${{ github.run_id }} mvn test-compile surefire:test
 
   trivy-scan-job:
     needs: [ publish-test-image-job ]

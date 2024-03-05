@@ -1,10 +1,17 @@
+app:
+  base-path: /api/v@major.version@
+  client:
+    host: http://localhost:4200
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: false
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
-    enabled: false
+    enabled: true
