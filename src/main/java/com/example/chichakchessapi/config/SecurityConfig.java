@@ -1,6 +1,5 @@
 package com.example.chichakchessapi.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -18,9 +17,6 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Value("${server.servlet.context-path}")
-    private String contextPath;
-
     @Bean
     @Profile("local")
     public SecurityFilterChain localFilterChain(HttpSecurity http) throws Exception {
@@ -60,16 +56,10 @@ public class SecurityConfig {
                 )
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers(contextPath + "/**")
-                        .ignoringRequestMatchers("/health-check")
-                        .ignoringRequestMatchers("/swagger-ui/**")
-                        .ignoringRequestMatchers("/v3/api-docs/**")
+                        .ignoringRequestMatchers("/**")
                 )
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(contextPath + "/**").permitAll()
-                        .requestMatchers("/health-check").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

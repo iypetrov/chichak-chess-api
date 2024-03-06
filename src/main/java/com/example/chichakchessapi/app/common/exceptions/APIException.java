@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class APIException extends RuntimeException {
-    private final APIErrorResponse apiErrorResponse;
+    private final transient APIErrorResponse apiErrorResponse;
 
     public APIException(String message, APIErrorResponse apiErrorResponse) {
         super(message);
