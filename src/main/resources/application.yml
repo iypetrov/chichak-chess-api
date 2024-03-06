@@ -1,0 +1,25 @@
+app:
+  version:
+    major: @major.version@
+    minor: @minor.version@
+    patch: @patch.version@
+server:
+  servlet:
+    context-path: /api/v@major.version@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+    enabled: true
+custom:
+  thread-pool:
+    core-pool-size: 5
+    max-pool-size: 10
