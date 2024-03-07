@@ -1,4 +1,6 @@
 app:
+  jwt:
+    secret: kdjaksdjaskdjlasdjaskldjaskldjaskfjfiafoasfoafpqfjpqwefoewfjoewfjeghsiogjgopsdgsdiog
   version:
     major: @major.version@
     minor: @minor.version@

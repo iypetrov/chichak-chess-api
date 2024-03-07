@@ -21,7 +21,7 @@ public class PlayerController {
     @GetMapping("/{id}")
     public ResponseEntity<PlayerResponseDTO> getById(@PathVariable String id) {
         return ResponseEntity.ok(
-                playerService.converPlayerModelToPlayerResponseDTO(playerService.getPlayerByID(id))
+                playerService.convertPlayerModelToPlayerResponseDTO(playerService.getPlayerByID(id))
         );
     }
 

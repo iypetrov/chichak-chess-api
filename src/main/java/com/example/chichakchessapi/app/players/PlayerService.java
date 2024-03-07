@@ -26,7 +26,7 @@ public class PlayerService extends BaseService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public PlayerResponseDTO converPlayerModelToPlayerResponseDTO(PlayerModel playerModel) {
+    public PlayerResponseDTO convertPlayerModelToPlayerResponseDTO(PlayerModel playerModel) {
         return map(playerModel, PlayerResponseDTO.class);
     }
 
@@ -66,6 +66,18 @@ public class PlayerService extends BaseService {
                                 CustomMessageUtilService.GENERAL_PROVIDED_ID + id
                         )
                 );
+        return map(playerEntity, PlayerModel.class);
+    }
+
+    public PlayerModel getPlayerByEmail(String email) {
+        Optional<PlayerEntity> playerEntity = playerRepository.findByEmail(email);
+        if (playerEntity.isEmpty()) {
+            throw invalidRequest(
+                    CustomMessageUtilService.PLAYER_DOES_NOT_EXIST,
+                    CustomMessageUtilService.PLAYER_EMAIL + email
+            ).get();
+        }
+
         return map(playerEntity, PlayerModel.class);
     }
 
