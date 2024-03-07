@@ -81,6 +81,25 @@ public class PlayerService extends BaseService {
         return map(playerEntity, PlayerModel.class);
     }
 
+    public String getPlayersEncodedPasswordByID(String id) {
+        Optional<String> playerID = UUIDUtilService.convertFromStringToUUID(id);
+        if (playerID.isEmpty()) {
+            throw notSupportedOperation(
+                    CustomMessageUtilService.GENERAL_NOT_VALID_UUID,
+                    CustomMessageUtilService.GENERAL_PROVIDED_ID + id
+            ).get();
+        }
+
+        PlayerEntity playerEntity = playerRepository.findById(playerID.get())
+                .orElseThrow(
+                        notFound(
+                                CustomMessageUtilService.PLAYER_DOES_NOT_EXIST,
+                                CustomMessageUtilService.GENERAL_PROVIDED_ID + id
+                        )
+                );
+        return playerEntity.getPassword();
+    }
+
     public List<PlayerModel> getAllPlayers() {
         List<PlayerEntity> playerEntities = playerRepository.findAll();
         return map(playerEntities, PlayerModel.class);

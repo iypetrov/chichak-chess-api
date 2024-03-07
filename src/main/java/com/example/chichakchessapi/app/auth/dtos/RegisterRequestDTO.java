@@ -1,4 +1,16 @@
 package com.example.chichakchessapi.app.auth.dtos;
 
-public record RegisterRequestDTO(String nickname, String email, String password) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class RegisterRequestDTO {
+    String nickname;
+    String email;
+    String password;
 }
