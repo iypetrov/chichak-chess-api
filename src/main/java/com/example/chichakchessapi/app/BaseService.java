@@ -7,7 +7,7 @@ import com.example.chichakchessapi.app.common.exceptions.InternalServerException
 import com.example.chichakchessapi.app.common.exceptions.InvalidRequestException;
 import com.example.chichakchessapi.app.common.exceptions.NotFoundException;
 import com.example.chichakchessapi.app.common.exceptions.NotSupportedOperationException;
-import com.example.chichakchessapi.app.common.exceptions.NotValidMovementException;
+import com.example.chichakchessapi.app.common.exceptions.domain.NotValidMovementException;
 import com.example.chichakchessapi.app.common.exceptions.UnauthorizedException;
 import jakarta.annotation.Resource;
 import org.modelmapper.ModelMapper;

@@ -1,0 +1,12 @@
+server:
+  error:
+    include-stacktrace: never
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+custom:
+  thread-pool:
+    core-pool-size: 7
+    max-pool-size: 12

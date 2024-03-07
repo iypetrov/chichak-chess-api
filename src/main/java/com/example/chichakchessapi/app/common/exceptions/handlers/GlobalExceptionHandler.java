@@ -1,6 +1,5 @@
 package com.example.chichakchessapi.app.common.exceptions.handlers;
 
-
 import com.example.chichakchessapi.app.common.errors.APIErrorResponse;
 import com.example.chichakchessapi.app.common.exceptions.InternalServerException;
 import com.example.chichakchessapi.app.common.exceptions.InvalidRequestException;

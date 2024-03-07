@@ -18,7 +18,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
     @Bean
-    @Profile("local")
+    @Profile("dev")
     public SecurityFilterChain localFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(AbstractHttpConfigurer::disable)
@@ -31,7 +31,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Profile("!local")
+    @Profile("!dev")
     public SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors

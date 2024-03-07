@@ -16,8 +16,9 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
+    open-in-view: false
   liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.xml
+    change-log: classpath:/db/changelog/changelog-master.xml
     enabled: true
 custom:
   thread-pool:
