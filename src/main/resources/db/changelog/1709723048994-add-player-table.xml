@@ -16,6 +16,9 @@
             <column name="email" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
+            <column name="role" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
             <column name="password" type="VARCHAR(60)">
                 <constraints nullable="false"/>
             </column>
@@ -24,6 +27,9 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <addUniqueConstraint columnNames="email"
+                             constraintName="player_email_unique"
+                             tableName="player"/>
     </changeSet>
 
 </databaseChangeLog>

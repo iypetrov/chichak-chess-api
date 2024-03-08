@@ -71,7 +71,7 @@ jobs:
                           -e API_MAJOR_VERSION=0 \
                           -e API_MINOR_VERSION=0 \
                           -e API_PATCH_VERSION=0 \
-                          ghcr.io/${{ env.IMAGE_NAME }}:${{ github.run_id }} mvn test-compile surefire:test
+                          ghcr.io/${{ env.IMAGE_NAME }}:${{ github.run_id }} ./mvnw test-compile surefire:test
 
   trivy-scan-job:
     needs: [ publish-test-image-job ]

@@ -1,6 +1,6 @@
 package com.example.chichakchessapi.app.common;
 
-public class CustomMessageUtilService {
+public class CustomMessageUtil {
     public static final String GENERAL_NOT_VALID_UUID = "Provided id is not valid UUID";
     public static final String GENERAL_PROVIDED_ID = "Provided ID: ";
 
@@ -10,6 +10,7 @@ public class CustomMessageUtilService {
     public static final String PLAYER_ID = "Player ID: ";
     public static final String PLAYER_EMAIL = "Player email: ";
 
-    private CustomMessageUtilService() {
+    private CustomMessageUtil() {
+        throw new IllegalStateException("Utility class");
     }
 }

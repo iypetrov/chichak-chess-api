@@ -1,9 +1,10 @@
 package com.example.chichakchessapi.app.players;
 
 import com.example.chichakchessapi.app.BaseService;
+import com.example.chichakchessapi.app.auth.PlayerRoles;
 import com.example.chichakchessapi.app.auth.models.RegisterModel;
-import com.example.chichakchessapi.app.common.CustomMessageUtilService;
-import com.example.chichakchessapi.app.common.UUIDUtilService;
+import com.example.chichakchessapi.app.common.CustomMessageUtil;
+import com.example.chichakchessapi.app.common.UUIDUtil;
 import com.example.chichakchessapi.app.players.dtos.PlayerResponseDTO;
 import com.example.chichakchessapi.app.players.entities.PlayerEntity;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
@@ -26,44 +27,55 @@ public class PlayerService extends BaseService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public PlayerResponseDTO convertPlayerModelToPlayerResponseDTO(PlayerModel playerModel) {
-        return map(playerModel, PlayerResponseDTO.class);
-    }
-
-    public List<PlayerResponseDTO> convertPlayerModelsToPlayerResponseDTOs(List<PlayerModel> playerModels) {
-        return map(playerModels, PlayerResponseDTO.class);
-    }
-
     public PlayerModel createPlayer(RegisterModel registerModel) {
         PlayerEntity playerEntity = map(registerModel, PlayerEntity.class);
         playerEntity.setId(UUID.randomUUID().toString());
         playerEntity.setPassword(passwordEncoder.encode(playerEntity.getPassword()));
+        playerEntity.setRole(PlayerRoles.USER.toString());
         playerEntity.setPoints(INITIAL_PLAYER_POINTS);
 
         if (playerRepository.findByEmail(playerEntity.getEmail()).isPresent()) {
             throw notSupportedOperation(
-                    CustomMessageUtilService.PLAYER_ALREADY_EXIST,
-                    CustomMessageUtilService.PLAYER_EMAIL + playerEntity.getId()
+                    CustomMessageUtil.PLAYER_ALREADY_EXIST,
+                    CustomMessageUtil.PLAYER_EMAIL + playerEntity.getId()
             ).get();
         }
 
         return map(playerRepository.save(playerEntity), PlayerModel.class);
     }
 
-    public PlayerModel getPlayerByID(String id) {
-        Optional<String> playerID = UUIDUtilService.convertFromStringToUUID(id);
+    public String getPlayersEncryptedPassword(String id) {
+        Optional<String> playerID = UUIDUtil.convertFromStringToUUID(id);
         if (playerID.isEmpty()) {
             throw notSupportedOperation(
-                    CustomMessageUtilService.GENERAL_NOT_VALID_UUID,
-                    CustomMessageUtilService.GENERAL_PROVIDED_ID + id
+                    CustomMessageUtil.GENERAL_NOT_VALID_UUID,
+                    CustomMessageUtil.GENERAL_PROVIDED_ID + id
+            ).get();
+        }
+
+        return playerRepository.findById(playerID.get())
+                .orElseThrow(
+                        notFound(
+                                CustomMessageUtil.PLAYER_DOES_NOT_EXIST,
+                                CustomMessageUtil.GENERAL_PROVIDED_ID + id
+                        )
+                ).getPassword();
+    }
+
+    public PlayerModel getPlayerByID(String id) {
+        Optional<String> playerID = UUIDUtil.convertFromStringToUUID(id);
+        if (playerID.isEmpty()) {
+            throw notSupportedOperation(
+                    CustomMessageUtil.GENERAL_NOT_VALID_UUID,
+                    CustomMessageUtil.GENERAL_PROVIDED_ID + id
             ).get();
         }
 
         PlayerEntity playerEntity = playerRepository.findById(playerID.get())
                 .orElseThrow(
                         notFound(
-                                CustomMessageUtilService.PLAYER_DOES_NOT_EXIST,
-                                CustomMessageUtilService.GENERAL_PROVIDED_ID + id
+                                CustomMessageUtil.PLAYER_DOES_NOT_EXIST,
+                                CustomMessageUtil.GENERAL_PROVIDED_ID + id
                         )
                 );
         return map(playerEntity, PlayerModel.class);
@@ -73,8 +85,8 @@ public class PlayerService extends BaseService {
         Optional<PlayerEntity> playerEntity = playerRepository.findByEmail(email);
         if (playerEntity.isEmpty()) {
             throw invalidRequest(
-                    CustomMessageUtilService.PLAYER_DOES_NOT_EXIST,
-                    CustomMessageUtilService.PLAYER_EMAIL + email
+                    CustomMessageUtil.PLAYER_DOES_NOT_EXIST,
+                    CustomMessageUtil.PLAYER_EMAIL + email
             ).get();
         }
 
@@ -82,19 +94,19 @@ public class PlayerService extends BaseService {
     }
 
     public String getPlayersEncodedPasswordByID(String id) {
-        Optional<String> playerID = UUIDUtilService.convertFromStringToUUID(id);
+        Optional<String> playerID = UUIDUtil.convertFromStringToUUID(id);
         if (playerID.isEmpty()) {
             throw notSupportedOperation(
-                    CustomMessageUtilService.GENERAL_NOT_VALID_UUID,
-                    CustomMessageUtilService.GENERAL_PROVIDED_ID + id
+                    CustomMessageUtil.GENERAL_NOT_VALID_UUID,
+                    CustomMessageUtil.GENERAL_PROVIDED_ID + id
             ).get();
         }
 
         PlayerEntity playerEntity = playerRepository.findById(playerID.get())
                 .orElseThrow(
                         notFound(
-                                CustomMessageUtilService.PLAYER_DOES_NOT_EXIST,
-                                CustomMessageUtilService.GENERAL_PROVIDED_ID + id
+                                CustomMessageUtil.PLAYER_DOES_NOT_EXIST,
+                                CustomMessageUtil.GENERAL_PROVIDED_ID + id
                         )
                 );
         return playerEntity.getPassword();
@@ -103,5 +115,21 @@ public class PlayerService extends BaseService {
     public List<PlayerModel> getAllPlayers() {
         List<PlayerEntity> playerEntities = playerRepository.findAll();
         return map(playerEntities, PlayerModel.class);
+    }
+
+    public void deleteUser(String id) {
+        Optional<String> playerID = UUIDUtil.convertFromStringToUUID(id);
+        if (playerID.isEmpty()) {
+            throw notSupportedOperation(
+                    CustomMessageUtil.GENERAL_NOT_VALID_UUID,
+                    CustomMessageUtil.GENERAL_PROVIDED_ID + id
+            ).get();
+        }
+
+        if (!playerRepository.existsById(playerID.get())) {
+            throw notFound("User doesn't exist", String.format("User ID: %s", playerID.get())).get();
+        }
+
+        playerRepository.deleteById(playerID.get());
     }
 }

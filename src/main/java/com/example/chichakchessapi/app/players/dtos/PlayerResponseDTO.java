@@ -13,6 +13,7 @@ public class PlayerResponseDTO {
     String id;
     String nickname;
     String email;
+    String role;
     String imageURL;
     Integer points;
 }

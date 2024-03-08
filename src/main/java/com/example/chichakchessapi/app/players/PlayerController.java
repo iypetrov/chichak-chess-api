@@ -21,14 +21,14 @@ public class PlayerController {
     @GetMapping("/{id}")
     public ResponseEntity<PlayerResponseDTO> getById(@PathVariable String id) {
         return ResponseEntity.ok(
-                playerService.convertPlayerModelToPlayerResponseDTO(playerService.getPlayerByID(id))
+                PlayerMapper.convertPlayerModelToPlayerResponseDTO(playerService.getPlayerByID(id))
         );
     }
 
     @GetMapping
     public ResponseEntity<List<PlayerResponseDTO>> getAll() {
         return ResponseEntity.ok(
-                playerService.convertPlayerModelsToPlayerResponseDTOs(playerService.getAllPlayers())
+                PlayerMapper.convertPlayerModelsToPlayerResponseDTOs(playerService.getAllPlayers())
         );
     }
 }

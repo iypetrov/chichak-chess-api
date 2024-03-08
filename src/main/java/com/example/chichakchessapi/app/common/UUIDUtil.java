@@ -3,8 +3,8 @@ package com.example.chichakchessapi.app.common;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UUIDUtilService {
-    private UUIDUtilService() {
+public class UUIDUtil {
+    private UUIDUtil() {
         throw new IllegalStateException("Utility class");
     }
 

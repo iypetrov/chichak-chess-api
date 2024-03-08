@@ -2,9 +2,11 @@ package com.example.chichakchessapi.app.auth;
 
 import com.example.chichakchessapi.app.auth.dtos.LoginRequestDTO;
 import com.example.chichakchessapi.app.auth.dtos.RegisterRequestDTO;
-import com.example.chichakchessapi.app.players.PlayerService;
+import com.example.chichakchessapi.app.players.PlayerMapper;
 import com.example.chichakchessapi.app.players.dtos.PlayerResponseDTO;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,11 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
     private final AuthService authService;
-    private final PlayerService playerService;
 
-    public AuthController(AuthService authService, PlayerService playerService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.playerService = playerService;
     }
 
     @PostMapping("/register")
@@ -25,11 +25,18 @@ public class AuthController {
             @RequestBody RegisterRequestDTO registerRequestDTO
     ) {
         PlayerModel playerModel = authService.register(
-                authService.convertRegisterRequestDTOToRegisterModel(registerRequestDTO)
+                AuthMapper.convertRegisterRequestDTOToRegisterModel(registerRequestDTO)
         );
-        return ResponseEntity.ok().body(
-                playerService.convertPlayerModelToPlayerResponseDTO(playerModel)
+
+        ResponseCookie cookieAuthToken = authService.getCookie(
+                AuthService.COOKIE_AUTH_TOKEN_NAME,
+                playerModel.getJwtToken(),
+                AuthService.TOKEN_VALIDITY_SECS
         );
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookieAuthToken.toString())
+                .body(PlayerMapper.convertPlayerModelToPlayerResponseDTO(playerModel));
     }
 
     @PostMapping("/login")
@@ -37,10 +44,17 @@ public class AuthController {
             @RequestBody LoginRequestDTO loginRequestDTO
     ) {
         PlayerModel playerModel = authService.login(
-                authService.convertLoginRequestDTOToLoginModel(loginRequestDTO)
+                AuthMapper.convertLoginRequestDTOToLoginModel(loginRequestDTO)
         );
-        return ResponseEntity.ok().body(
-                playerService.convertPlayerModelToPlayerResponseDTO(playerModel)
+
+        ResponseCookie cookieAuthToken = authService.getCookie(
+                AuthService.COOKIE_AUTH_TOKEN_NAME,
+                playerModel.getJwtToken(),
+                AuthService.TOKEN_VALIDITY_SECS
         );
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookieAuthToken.toString())
+                .body(PlayerMapper.convertPlayerModelToPlayerResponseDTO(playerModel));
     }
 }
