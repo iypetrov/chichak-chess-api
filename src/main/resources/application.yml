@@ -1,4 +1,6 @@
 app:
+  jwt:
+    secret: ${AUTH_SECRET}
   version:
     major: @major.version@
     minor: @minor.version@
@@ -16,8 +18,9 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
+    open-in-view: false
   liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.xml
+    change-log: classpath:/db/changelog/changelog-master.xml
     enabled: true
 custom:
   thread-pool:

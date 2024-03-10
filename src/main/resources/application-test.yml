@@ -1,0 +1,22 @@
+app:
+  jwt:
+    secret: kdjaksdjaskdjlasdjaskldjaskldjaskfjfiafoasfoafpqfjpqwefoewfjoewfjeghsiogjgopsdgsdiog
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: false
+  sql:
+    init:
+      platform: h2
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/changelog-master.xml

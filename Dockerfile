@@ -1,7 +1,7 @@
-FROM maven:3.9.6-amazoncorretto-17 AS build-stage
+FROM amazoncorretto:17 AS build-stage
 ADD . /app/
 WORKDIR /app/
-RUN mvn clean install -DskipTests
+RUN chmod +x mvnw && ./mvnw clean install -DskipTests
 
 FROM build-stage AS run-stage
 WORKDIR /app/
