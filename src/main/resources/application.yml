@@ -1,6 +1,6 @@
 app:
   jwt:
-    secret: kdjaksdjaskdjlasdjaskldjaskldjaskfjfiafoasfoafpqfjpqwefoewfjoewfjeghsiogjgopsdgsdiog
+    secret: ${AUTH_SECRET}
   version:
     major: @major.version@
     minor: @minor.version@
