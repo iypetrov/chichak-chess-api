@@ -2,7 +2,6 @@ package com.example.chichakchessapi.app.gameparticipants;
 
 import com.example.chichakchessapi.app.BaseService;
 import com.example.chichakchessapi.app.common.PaginationInfo;
-import com.example.chichakchessapi.app.gameparticipants.dtos.GameParticipantResponseDTO;
 import com.example.chichakchessapi.app.gameparticipants.entities.GameParticipantEntity;
 import com.example.chichakchessapi.app.gameparticipants.models.GameParticipantModel;
 import com.example.chichakchessapi.app.games.entities.GameEntity;
