@@ -1,6 +1,7 @@
 package com.example.chichakchessapi.app.players;
 
 import com.example.chichakchessapi.app.players.dtos.PlayerResponseDTO;
+import com.example.chichakchessapi.app.players.entities.PlayerEntity;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
 
 import java.util.ArrayList;
@@ -11,30 +12,42 @@ public class PlayerMapper {
         throw new IllegalStateException("Mapper class");
     }
 
-    public static PlayerResponseDTO convertPlayerModelToPlayerResponseDTO(PlayerModel playerModel) {
+    public static PlayerResponseDTO convertPlayerModelToPlayerResponseDTO(PlayerModel player) {
         return new PlayerResponseDTO(
-                playerModel.getId(),
-                playerModel.getNickname(),
-                playerModel.getEmail(),
-                playerModel.getRole(),
-                playerModel.getImageURL(),
-                playerModel.getPoints()
+                player.getId(),
+                player.getNickname(),
+                player.getEmail(),
+                player.getRole().toString(),
+                player.getImageURL(),
+                player.getPoints()
         );
     }
 
-    public static List<PlayerResponseDTO> convertPlayerModelsToPlayerResponseDTOs(List<PlayerModel> playerModels) {
+    public static List<PlayerResponseDTO> convertPlayerModelsToPlayerResponseDTOs(List<PlayerModel> players) {
         List<PlayerResponseDTO> playerResponseDTOs = new ArrayList<>();
-        playerModels.forEach(playerModel -> playerResponseDTOs.add(
+        players.forEach(player -> playerResponseDTOs.add(
                         new PlayerResponseDTO(
-                                playerModel.getId(),
-                                playerModel.getNickname(),
-                                playerModel.getEmail(),
-                                playerModel.getRole(),
-                                playerModel.getImageURL(),
-                                playerModel.getPoints()
+                                player.getId(),
+                                player.getNickname(),
+                                player.getEmail(),
+                                player.getRole().toString(),
+                                player.getImageURL(),
+                                player.getPoints()
                         )
                 )
         );
         return playerResponseDTOs;
+    }
+
+    public static PlayerModel convertPlayerEntityToPlayerModel(PlayerEntity player) {
+        return new PlayerModel(
+                player.getId(),
+                player.getNickname(),
+                player.getEmail(),
+                player.getRole(),
+                player.getImageURL(),
+                player.getPoints(),
+                ""
+        );
     }
 }

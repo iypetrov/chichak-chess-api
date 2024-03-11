@@ -20,41 +20,50 @@ public class AuthController {
         this.authService = authService;
     }
 
+    private ResponseCookie getCookie(String name, String value, long maxAgeSeconds) {
+        return ResponseCookie.from(name, value)
+                .maxAge(maxAgeSeconds)
+                .path("/")
+                .secure(false)
+                .httpOnly(false)
+                .build();
+    }
+
     @PostMapping("/register")
     public ResponseEntity<PlayerResponseDTO> register(
-            @RequestBody RegisterRequestDTO registerRequestDTO
+            @RequestBody RegisterRequestDTO registerRequest
     ) {
-        PlayerModel playerModel = authService.register(
-                AuthMapper.convertRegisterRequestDTOToRegisterModel(registerRequestDTO)
+        PlayerModel player = authService.register(
+                AuthMapper.convertRegisterRequestDTOToRegisterModel(registerRequest)
         );
 
-        ResponseCookie cookieAuthToken = authService.getCookie(
+        ResponseCookie cookieAuthToken = getCookie(
                 AuthService.COOKIE_AUTH_TOKEN_NAME,
-                playerModel.getJwtToken(),
+                player.getJwtToken(),
                 AuthService.TOKEN_VALIDITY_SECS
         );
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookieAuthToken.toString())
-                .body(PlayerMapper.convertPlayerModelToPlayerResponseDTO(playerModel));
+                .body(PlayerMapper.convertPlayerModelToPlayerResponseDTO(player));
     }
 
     @PostMapping("/login")
     public ResponseEntity<PlayerResponseDTO> login(
-            @RequestBody LoginRequestDTO loginRequestDTO
+            @RequestBody LoginRequestDTO loginRequest
     ) {
-        PlayerModel playerModel = authService.login(
-                AuthMapper.convertLoginRequestDTOToLoginModel(loginRequestDTO)
+        PlayerModel player = authService.login(
+                AuthMapper.convertLoginRequestDTOToLoginModel(loginRequest)
         );
 
-        ResponseCookie cookieAuthToken = authService.getCookie(
+        ResponseCookie cookieAuthToken = getCookie(
                 AuthService.COOKIE_AUTH_TOKEN_NAME,
-                playerModel.getJwtToken(),
+                player.getJwtToken(),
                 AuthService.TOKEN_VALIDITY_SECS
         );
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookieAuthToken.toString())
-                .body(PlayerMapper.convertPlayerModelToPlayerResponseDTO(playerModel));
+                .body(PlayerMapper.convertPlayerModelToPlayerResponseDTO(player));
     }
 }

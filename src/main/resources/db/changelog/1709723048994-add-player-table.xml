@@ -8,7 +8,7 @@
     <changeSet id="1709723048994-1" author="ipetrov (generated)">
         <createTable tableName="player">
             <column name="id" type="VARCHAR(36)">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_player"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_PLAYER"/>
             </column>
             <column name="nickname" type="VARCHAR(20)">
                 <constraints nullable="false"/>
@@ -28,8 +28,7 @@
             </column>
         </createTable>
         <addUniqueConstraint columnNames="email"
-                             constraintName="player_email_unique"
+                             constraintName="PLAYER_EMAIL_UNIQUE"
                              tableName="player"/>
     </changeSet>
-
 </databaseChangeLog>

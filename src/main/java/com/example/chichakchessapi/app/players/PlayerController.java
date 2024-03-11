@@ -19,7 +19,7 @@ public class PlayerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlayerResponseDTO> getById(@PathVariable String id) {
+    public ResponseEntity<PlayerResponseDTO> getByID(@PathVariable String id) {
         return ResponseEntity.ok(
                 PlayerMapper.convertPlayerModelToPlayerResponseDTO(playerService.getPlayerByID(id))
         );

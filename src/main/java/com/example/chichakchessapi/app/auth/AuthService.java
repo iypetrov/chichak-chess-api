@@ -1,8 +1,6 @@
 package com.example.chichakchessapi.app.auth;
 
 import com.example.chichakchessapi.app.BaseService;
-import com.example.chichakchessapi.app.auth.dtos.LoginRequestDTO;
-import com.example.chichakchessapi.app.auth.dtos.RegisterRequestDTO;
 import com.example.chichakchessapi.app.auth.models.LoginModel;
 import com.example.chichakchessapi.app.auth.models.RegisterModel;
 import com.example.chichakchessapi.app.common.CustomMessageUtil;
@@ -10,7 +8,6 @@ import com.example.chichakchessapi.app.players.PlayerService;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import org.springframework.http.ResponseCookie;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,42 +41,42 @@ public class AuthService extends BaseService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public PlayerModel register(RegisterModel registerModel) {
-        PlayerModel playerModel = playerService.createPlayer(registerModel);
+    public PlayerModel register(RegisterModel registration) {
+        PlayerModel player = playerService.createPlayer(registration);
         Map<String, Object> claims = new HashMap<>();
-        claims.put(ROLE_CLAIM_NAME, playerModel.getRole());
+        claims.put(ROLE_CLAIM_NAME, player.getRole());
 
-        playerModel.setJwtToken(
+        player.setJwtToken(
                 generateJWTToken(
                         claims,
-                        playerModel
+                        player
                 )
         );
 
-        return playerModel;
+        return player;
     }
 
-    public PlayerModel login(LoginModel loginModel) {
-        PlayerModel playerModel = playerService.getPlayerByEmail(loginModel.getEmail());
-        String encodedPassword = playerService.getPlayersEncodedPasswordByID(playerModel.getId());
-        if (!passwordEncoder.matches(loginModel.getPassword(), encodedPassword)) {
+    public PlayerModel login(LoginModel login) {
+        PlayerModel player = playerService.getPlayerByEmail(login.getEmail());
+        String encodedPassword = playerService.getPlayersEncodedPasswordByID(player.getId());
+        if (!passwordEncoder.matches(login.getPassword(), encodedPassword)) {
             throw unauthorized(
                     CustomMessageUtil.PLAYER_WRONG_PASSWORD,
-                    CustomMessageUtil.PLAYER_ID + playerModel.getId()
+                    CustomMessageUtil.PLAYER_ID + player.getId()
             ).get();
         }
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put(ROLE_CLAIM_NAME, playerModel.getRole());
+        claims.put(ROLE_CLAIM_NAME, player.getRole());
 
-        playerModel.setJwtToken(
+        player.setJwtToken(
                 generateJWTToken(
                         claims,
-                        playerModel
+                        player
                 )
         );
 
-        return playerModel;
+        return player;
     }
 
     public String generateJWTToken(Map<String, Object> claims, UserDetails userDetails) {
@@ -110,14 +107,5 @@ public class AuthService extends BaseService {
 
     public boolean verifyIfTokenIsExpired(String token) {
         return extractClaims(token).getExpiration().before(new Date());
-    }
-
-    public ResponseCookie getCookie(String name, String value, long maxAgeSeconds) {
-        return ResponseCookie.from(name, value)
-                .maxAge(maxAgeSeconds)
-                .path("/")
-                .secure(false)
-                .httpOnly(false)
-                .build();
     }
 }

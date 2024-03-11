@@ -41,7 +41,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         boolean doesNeedAuth = noAuthEndpoints.stream()
-                .noneMatch(x -> request.getServletPath().contains(x));
+                .noneMatch(endpoint -> request.getServletPath().contains(endpoint));
 
         if (doesNeedAuth) {
             List<Cookie> cookies = (request.getCookies() != null)

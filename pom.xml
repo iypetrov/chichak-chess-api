@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <properties>
         <java.version>17</java.version>
@@ -143,5 +143,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

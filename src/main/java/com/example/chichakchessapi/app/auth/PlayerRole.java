@@ -1,6 +1,6 @@
 package com.example.chichakchessapi.app.auth;
 
-public enum PlayerRoles {
+public enum PlayerRole {
     USER,
     ADMIN
 }

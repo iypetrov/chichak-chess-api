@@ -10,18 +10,18 @@ public class AuthMapper {
         throw new IllegalStateException("Mapper class");
     }
 
-    public static RegisterModel convertRegisterRequestDTOToRegisterModel(RegisterRequestDTO registerRequestDTO) {
+    public static RegisterModel convertRegisterRequestDTOToRegisterModel(RegisterRequestDTO registerRequest) {
         return new RegisterModel(
-                registerRequestDTO.nickname(),
-                registerRequestDTO.email(),
-                registerRequestDTO.password()
+                registerRequest.nickname(),
+                registerRequest.email(),
+                registerRequest.password()
         );
     }
 
-    public static LoginModel convertLoginRequestDTOToLoginModel(LoginRequestDTO loginRequestDTO) {
+    public static LoginModel convertLoginRequestDTOToLoginModel(LoginRequestDTO loginRequest) {
         return new LoginModel(
-                loginRequestDTO.email(),
-                loginRequestDTO.password()
+                loginRequest.email(),
+                loginRequest.password()
         );
     }
 }
