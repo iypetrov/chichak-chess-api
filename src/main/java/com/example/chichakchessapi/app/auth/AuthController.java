@@ -6,6 +6,7 @@ import com.example.chichakchessapi.app.players.PlayerMapper;
 import com.example.chichakchessapi.app.players.dtos.PlayerResponseDTO;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +44,7 @@ public class AuthController {
                 AuthService.TOKEN_VALIDITY_SECS
         );
 
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .header(HttpHeaders.SET_COOKIE, cookieAuthToken.toString())
                 .body(PlayerMapper.convertPlayerModelToPlayerResponseDTO(player));
     }

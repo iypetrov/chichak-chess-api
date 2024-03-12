@@ -8,4 +8,5 @@
     <include file="/db/changelog/1710084898051-add-game-table.xml"/>
     <include file="/db/changelog/1710096678566-add-game-participant-table.xml"/>
     <include file="/db/changelog/1710151166849-add-game-state-table.xml"/>
+    <include file="/db/changelog/1710233832850-add-player-preference-table.xml"/>
 </databaseChangeLog>

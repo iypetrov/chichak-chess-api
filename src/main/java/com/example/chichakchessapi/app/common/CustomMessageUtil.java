@@ -6,6 +6,7 @@ public class CustomMessageUtil {
     public static final String GENERAL_PROVIDED_ID = "Provided ID: ";
 
     public static final String PLAYER_DOES_NOT_EXIST = "Player doesn't exist";
+    public static final String PLAYER_IS_NOT_ADMIN = "You do not have admin rights";
     public static final String PLAYER_ALREADY_EXIST = "This email is already associated with other account";
     public static final String PLAYER_WRONG_PASSWORD = "Wrong password";
     public static final String PLAYER_ID = "Player ID: ";

@@ -17,7 +17,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="active_color" type="VARCHAR(5)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" validateNullable="true"/>
             </column>
             <column name="is_castle_available" type="BOOLEAN">
                 <constraints nullable="false"/>

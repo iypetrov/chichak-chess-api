@@ -4,19 +4,12 @@ import com.example.chichakchessapi.app.BaseService;
 import com.example.chichakchessapi.app.auth.models.LoginModel;
 import com.example.chichakchessapi.app.auth.models.RegisterModel;
 import com.example.chichakchessapi.app.common.CustomMessageUtil;
+import com.example.chichakchessapi.app.players.PlayerFindService;
 import com.example.chichakchessapi.app.players.PlayerService;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,18 +19,21 @@ public class AuthService extends BaseService {
     public static final String COOKIE_AUTH_TOKEN_NAME = "AUTH-TOKEN";
     public static final String ROLE_CLAIM_NAME = "role";
 
-    private final Key jwtKey;
 
     private final PlayerService playerService;
+    private final PlayerFindService playerFindService;
+    private final JWTGenerationService jwtGenerationService;
     private final PasswordEncoder passwordEncoder;
 
     public AuthService(
-            @Value("${app.jwt.secret}") String jwtSecret,
             PlayerService playerService,
+            PlayerFindService playerFindService,
+            JWTGenerationService jwtGenerationService,
             PasswordEncoder passwordEncoder
     ) {
-        this.jwtKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         this.playerService = playerService;
+        this.playerFindService = playerFindService;
+        this.jwtGenerationService = jwtGenerationService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -47,7 +43,7 @@ public class AuthService extends BaseService {
         claims.put(ROLE_CLAIM_NAME, player.getRole());
 
         player.setJwtToken(
-                generateJWTToken(
+                jwtGenerationService.generateJWTToken(
                         claims,
                         player
                 )
@@ -57,7 +53,7 @@ public class AuthService extends BaseService {
     }
 
     public PlayerModel login(LoginModel login) {
-        PlayerModel player = playerService.getPlayerByEmail(login.getEmail());
+        PlayerModel player = playerFindService.getPlayerByEmail(login.getEmail());
         String encodedPassword = playerService.getPlayersEncodedPasswordByID(player.getId());
         if (!passwordEncoder.matches(login.getPassword(), encodedPassword)) {
             throw unauthorized(
@@ -70,42 +66,12 @@ public class AuthService extends BaseService {
         claims.put(ROLE_CLAIM_NAME, player.getRole());
 
         player.setJwtToken(
-                generateJWTToken(
+                jwtGenerationService.generateJWTToken(
                         claims,
                         player
                 )
         );
 
         return player;
-    }
-
-    public String generateJWTToken(Map<String, Object> claims, UserDetails userDetails) {
-        Date issuedAt = new Date();
-        Date expiration = Date.from(issuedAt.toInstant().plusSeconds(TOKEN_VALIDITY_SECS));
-
-        return Jwts.builder()
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(issuedAt)
-                .setExpiration(expiration)
-                .addClaims(claims)
-                .signWith(jwtKey, SignatureAlgorithm.HS512)
-                .compact();
-    }
-
-    public Claims extractClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(jwtKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    public boolean verifyIfJWTTokenIsValid(String token, UserDetails userDetails) {
-        String playerEmail = extractClaims(token).getSubject();
-        return playerEmail.equals(userDetails.getUsername()) && !verifyIfTokenIsExpired(token);
-    }
-
-    public boolean verifyIfTokenIsExpired(String token) {
-        return extractClaims(token).getExpiration().before(new Date());
     }
 }

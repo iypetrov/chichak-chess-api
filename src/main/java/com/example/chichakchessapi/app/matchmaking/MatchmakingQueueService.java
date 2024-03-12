@@ -1,7 +1,7 @@
 package com.example.chichakchessapi.app.matchmaking;
 
 import com.example.chichakchessapi.app.games.models.GameModel;
-import com.example.chichakchessapi.app.players.PlayerService;
+import com.example.chichakchessapi.app.players.PlayerFindService;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -15,17 +15,17 @@ public class MatchmakingQueueService {
     private final ConcurrentLinkedDeque<PlayerModel> matchmakingQueue;
     private final Map<String, DeferredResult<GameModel>> playerIDsToResultsMatchmaking;
     private final MatchmakingService matchmakingService;
-    private final PlayerService playerService;
+    private final PlayerFindService playerFindService;
 
-    public MatchmakingQueueService(MatchmakingService matchmakingService, PlayerService playerService) {
+    public MatchmakingQueueService(MatchmakingService matchmakingService, PlayerFindService playerFindService) {
         this.matchmakingQueue = new ConcurrentLinkedDeque<>();
         this.playerIDsToResultsMatchmaking = new ConcurrentHashMap<>();
         this.matchmakingService = matchmakingService;
-        this.playerService = playerService;
+        this.playerFindService = playerFindService;
     }
 
     public void enqueuePlayer(String id, DeferredResult<GameModel> resultMatchmaking) {
-        PlayerModel playerModel = playerService.getPlayerByID(id);
+        PlayerModel playerModel = playerFindService.getPlayerByID(id);
         matchmakingQueue.add(playerModel);
         playerIDsToResultsMatchmaking.put(id, resultMatchmaking);
 

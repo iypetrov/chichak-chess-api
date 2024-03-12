@@ -1,6 +1,7 @@
 package com.example.chichakchessapi.app.players.models;
 
 import com.example.chichakchessapi.app.auth.PlayerRole;
+import com.example.chichakchessapi.app.playerpreferences.models.PlayerPreferenceModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PlayerModel implements UserDetails {
     private String id;
+    private PlayerPreferenceModel playerPreference;
     private String nickname;
     private String email;
     private PlayerRole role;

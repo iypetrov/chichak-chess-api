@@ -13,11 +13,11 @@
             <column name="nickname" type="VARCHAR(20)">
                 <constraints nullable="false"/>
             </column>
-            <column name="email" type="VARCHAR(256)">
+            <column name="email" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="role" type="VARCHAR(10)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" validateNullable="true"/>
             </column>
             <column name="password" type="VARCHAR(60)">
                 <constraints nullable="false"/>
@@ -28,7 +28,7 @@
             </column>
         </createTable>
         <addUniqueConstraint columnNames="email"
-                             constraintName="PLAYER_EMAIL_UNIQUE"
+                             constraintName="UC_PLAYER_EMAIL"
                              tableName="player"/>
     </changeSet>
 </databaseChangeLog>

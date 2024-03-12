@@ -1,5 +1,6 @@
 package com.example.chichakchessapi.app.players;
 
+import com.example.chichakchessapi.app.playerpreferences.PlayerPreferenceMapper;
 import com.example.chichakchessapi.app.players.dtos.PlayerResponseDTO;
 import com.example.chichakchessapi.app.players.entities.PlayerEntity;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
@@ -42,6 +43,7 @@ public class PlayerMapper {
     public static PlayerModel convertPlayerEntityToPlayerModel(PlayerEntity player) {
         return new PlayerModel(
                 player.getId(),
+                PlayerPreferenceMapper.convertPlayerPreferenceEntityToPlayerPreferenceModel(player.getPlayerPreference()),
                 player.getNickname(),
                 player.getEmail(),
                 player.getRole(),

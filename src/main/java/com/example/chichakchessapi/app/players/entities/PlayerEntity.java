@@ -1,11 +1,15 @@
 package com.example.chichakchessapi.app.players.entities;
 
 import com.example.chichakchessapi.app.auth.PlayerRole;
+import com.example.chichakchessapi.app.playerpreferences.entities.PlayerPreferenceEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Min;
@@ -29,6 +33,10 @@ public class PlayerEntity {
     @Id
     @Column(name = "id", nullable = false, updatable = false, length = 36)
     private String id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "player_preference_id", referencedColumnName = "id")
+    private PlayerPreferenceEntity playerPreference;
 
     @Column(name = "nickname", nullable = false, length = 20)
     private String nickname;
