@@ -1,6 +1,7 @@
 package com.example.chichakchessapi.app.gameparticipants;
 
 import com.example.chichakchessapi.app.BaseService;
+import com.example.chichakchessapi.app.common.MapperUtil;
 import com.example.chichakchessapi.app.common.PaginationInfo;
 import com.example.chichakchessapi.app.gameparticipants.entities.GameParticipantEntity;
 import com.example.chichakchessapi.app.gameparticipants.models.GameParticipantModel;
@@ -17,10 +18,12 @@ import java.util.UUID;
 
 @Service
 public class GameParticipantService extends BaseService {
+    private final MapperUtil mapperUtil;
     private final GameParticipantRepository gameParticipantRepository;
     private final GameParticipantSpecification gameParticipantSpecification;
 
-    public GameParticipantService(GameParticipantRepository gameParticipantRepository, GameParticipantSpecification gameParticipantSpecification) {
+    public GameParticipantService(MapperUtil mapperUtil, GameParticipantRepository gameParticipantRepository, GameParticipantSpecification gameParticipantSpecification) {
+        this.mapperUtil = mapperUtil;
         this.gameParticipantRepository = gameParticipantRepository;
         this.gameParticipantSpecification = gameParticipantSpecification;
     }
@@ -29,8 +32,8 @@ public class GameParticipantService extends BaseService {
         gameParticipantRepository.save(
                 new GameParticipantEntity(
                         UUID.randomUUID().toString(),
-                        map(game, GameEntity.class),
-                        map(player, PlayerEntity.class),
+                        mapperUtil.map(game, GameEntity.class),
+                        mapperUtil.map(player, PlayerEntity.class),
                         null,
                         null
                 )
@@ -52,9 +55,7 @@ public class GameParticipantService extends BaseService {
         Page<GameParticipantEntity> gameParticipants = gameParticipantRepository.findAll(spec, pageable);
         PaginationInfo<GameParticipantModel> pageInfo = new PaginationInfo<>();
         pageInfo.setPage(
-                GameParticipantMapper.convertGameParticipantEntitiesToGameParticipantModels(
-                        gameParticipants.getContent()
-                )
+                mapperUtil.map(gameParticipants.getContent(), GameParticipantModel.class)
         );
 
         return pageInfo;

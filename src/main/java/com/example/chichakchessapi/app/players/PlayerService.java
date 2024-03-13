@@ -5,6 +5,7 @@ import com.example.chichakchessapi.app.auth.JWTGenerationService;
 import com.example.chichakchessapi.app.auth.PlayerRole;
 import com.example.chichakchessapi.app.auth.models.RegisterModel;
 import com.example.chichakchessapi.app.common.CustomMessageUtil;
+import com.example.chichakchessapi.app.common.MapperUtil;
 import com.example.chichakchessapi.app.common.UUIDUtil;
 import com.example.chichakchessapi.app.playerpreferences.PlayerPreferenceService;
 import com.example.chichakchessapi.app.playerpreferences.entities.PlayerPreferenceEntity;
@@ -20,13 +21,15 @@ import static com.example.chichakchessapi.app.playerspointscalculation.PlayersPo
 
 @Service
 public class PlayerService extends BaseService {
+    private final MapperUtil mapperUtil;
     private final PlayerRepository playerRepository;
     private final PasswordEncoder passwordEncoder;
     private final PlayerFindService playerFindService;
     private final PlayerPreferenceService playerPreferenceService;
     private final JWTGenerationService jwtGenerationService;
 
-    public PlayerService(PlayerRepository playersRepository, PasswordEncoder passwordEncoder, PlayerFindService playerFindService, PlayerPreferenceService playerPreferenceService, JWTGenerationService jwtGenerationService) {
+    public PlayerService(MapperUtil mapperUtil, PlayerRepository playersRepository, PasswordEncoder passwordEncoder, PlayerFindService playerFindService, PlayerPreferenceService playerPreferenceService, JWTGenerationService jwtGenerationService) {
+        this.mapperUtil = mapperUtil;
         this.playerRepository = playersRepository;
         this.passwordEncoder = passwordEncoder;
         this.playerFindService = playerFindService;
@@ -36,7 +39,7 @@ public class PlayerService extends BaseService {
 
     public PlayerModel createPlayer(RegisterModel registration) {
         PlayerPreferenceEntity playerPreference = playerPreferenceService.createPlayerPreference();
-        PlayerEntity playerEntity = map(registration, PlayerEntity.class);
+        PlayerEntity playerEntity = mapperUtil.map(registration, PlayerEntity.class);
         playerEntity.setId(UUID.randomUUID().toString());
         playerEntity.setPlayerPreference(playerPreference);
         playerEntity.setPassword(passwordEncoder.encode(playerEntity.getPassword()));
@@ -50,7 +53,7 @@ public class PlayerService extends BaseService {
             ).get();
         }
 
-        return map(playerRepository.save(playerEntity), PlayerModel.class);
+        return mapperUtil.map(playerRepository.save(playerEntity), PlayerModel.class);
     }
 
     public String getPlayersEncodedPasswordByID(String id) {

@@ -1,6 +1,7 @@
 package com.example.chichakchessapi.app.gamestates;
 
 import com.example.chichakchessapi.app.BaseService;
+import com.example.chichakchessapi.app.common.MapperUtil;
 import com.example.chichakchessapi.app.engine.PieceColor;
 import com.example.chichakchessapi.app.games.models.GameModel;
 import com.example.chichakchessapi.app.gamestates.entities.GameStateEntity;
@@ -18,10 +19,12 @@ import static com.example.chichakchessapi.app.engine.ChessStateValidatorService.
 
 @Service
 public class GameStateService extends BaseService {
+    private final MapperUtil mapperUtil;
     private final GameStateRepository gameStateRepository;
     private final GameStateSpecification gameStateSpecification;
 
-    public GameStateService(GameStateRepository gameStateRepository, GameStateSpecification gameStateSpecification) {
+    public GameStateService(MapperUtil mapperUtil, GameStateRepository gameStateRepository, GameStateSpecification gameStateSpecification) {
+        this.mapperUtil = mapperUtil;
         this.gameStateRepository = gameStateRepository;
         this.gameStateSpecification = gameStateSpecification;
     }
@@ -39,7 +42,7 @@ public class GameStateService extends BaseService {
         );
 
         gameStateRepository.save(
-                map(gameState, GameStateEntity.class)
+                mapperUtil.map(gameState, GameStateEntity.class)
         );
     }
 
@@ -47,6 +50,6 @@ public class GameStateService extends BaseService {
         Specification<GameStateEntity> spec = Specification
                 .where(gameStateSpecification.gameEquals(gameID));
         List<GameStateEntity> gameStates = gameStateRepository.findAll(spec);
-        return map(gameStates, GameStateModel.class);
+        return mapperUtil.map(gameStates, GameStateModel.class);
     }
 }

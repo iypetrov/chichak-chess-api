@@ -2,6 +2,7 @@ package com.example.chichakchessapi.app.players;
 
 import com.example.chichakchessapi.app.BaseService;
 import com.example.chichakchessapi.app.common.CustomMessageUtil;
+import com.example.chichakchessapi.app.common.MapperUtil;
 import com.example.chichakchessapi.app.common.UUIDUtil;
 import com.example.chichakchessapi.app.players.entities.PlayerEntity;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
@@ -12,9 +13,11 @@ import java.util.Optional;
 
 @Service
 public class PlayerFindService extends BaseService {
+    private final MapperUtil mapperUtil;
     private final PlayerRepository playerRepository;
 
-    public PlayerFindService(PlayerRepository playerRepository) {
+    public PlayerFindService(MapperUtil mapperUtil, PlayerRepository playerRepository) {
+        this.mapperUtil = mapperUtil;
         this.playerRepository = playerRepository;
     }
 
@@ -34,7 +37,7 @@ public class PlayerFindService extends BaseService {
                                 CustomMessageUtil.GENERAL_PROVIDED_ID + id
                         )
                 );
-        return map(playerEntity, PlayerModel.class);
+        return mapperUtil.map(playerEntity, PlayerModel.class);
     }
 
     public PlayerModel getPlayerByEmail(String email) {
@@ -46,11 +49,11 @@ public class PlayerFindService extends BaseService {
             ).get();
         }
 
-        return map(playerEntity, PlayerModel.class);
+        return mapperUtil.map(playerEntity, PlayerModel.class);
     }
 
     public List<PlayerModel> getAllPlayers() {
         List<PlayerEntity> playerEntities = playerRepository.findAll();
-        return map(playerEntities, PlayerModel.class);
+        return mapperUtil.map(playerEntities, PlayerModel.class);
     }
 }

@@ -20,20 +20,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public abstract class BaseService {
-    @Resource
-    private ModelMapper modelMapper;
-
-    protected <T> T map(Object sourceObject, Class<T> targetClass) {
-        return modelMapper.map(sourceObject, targetClass);
-    }
-
-    protected <T> List<T> map(List<?> sourceObjects, Class<T> targetClass) {
-        return sourceObjects
-                .stream()
-                .map(obj -> modelMapper.map(obj, targetClass))
-                .toList();
-    }
-
     protected Supplier<BadFormatException> badFormat(String message, String details) {
         return () -> new BadFormatException(
                 message,

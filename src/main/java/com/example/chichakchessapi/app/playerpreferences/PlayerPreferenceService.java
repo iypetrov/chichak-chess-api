@@ -3,7 +3,6 @@ package com.example.chichakchessapi.app.playerpreferences;
 import com.example.chichakchessapi.app.BaseService;
 import com.example.chichakchessapi.app.common.CustomMessageUtil;
 import com.example.chichakchessapi.app.common.UUIDUtil;
-import com.example.chichakchessapi.app.playerpreferences.dtos.PlayerPreferenceRequestDTO;
 import com.example.chichakchessapi.app.playerpreferences.entities.PlayerPreferenceEntity;
 import com.example.chichakchessapi.app.playerpreferences.models.PlayerPreferenceModel;
 import com.example.chichakchessapi.app.players.PlayerFindService;
