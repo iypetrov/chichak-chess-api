@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PlayerModel implements UserDetails {
     private String id;
-    private PlayerPreferenceModel playerPreference;
+    private transient PlayerPreferenceModel playerPreference;
     private String nickname;
     private String email;
     private PlayerRole role;

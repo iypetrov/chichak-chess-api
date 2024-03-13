@@ -10,13 +10,10 @@ import com.example.chichakchessapi.app.common.exceptions.NotFoundException;
 import com.example.chichakchessapi.app.common.exceptions.NotSupportedOperationException;
 import com.example.chichakchessapi.app.common.exceptions.domain.NotValidMovementException;
 import com.example.chichakchessapi.app.common.exceptions.UnauthorizedException;
-import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public abstract class BaseService {
