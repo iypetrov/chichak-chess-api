@@ -12,6 +12,8 @@ public class CustomMessageUtil {
     public static final String PLAYER_ID = "Player ID: ";
     public static final String PLAYER_EMAIL = "Player email: ";
 
+    public static final String GAME_CANNOT_ENROLL_GAME_AS_OTHER_PLAYER = "You cannot enroll to a game as other player";
+
     private CustomMessageUtil() {
         throw new IllegalStateException("Utility class");
     }

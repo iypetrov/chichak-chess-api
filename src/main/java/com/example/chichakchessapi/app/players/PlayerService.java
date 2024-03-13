@@ -76,15 +76,15 @@ public class PlayerService extends BaseService {
     }
 
     public void deleteUserByUserByID(String id, String jwtToken) {
-        String userEmail = jwtGenerationService.extractClaims(jwtToken).getSubject();
-        PlayerRole role = playerFindService.getPlayerByEmail(userEmail).getRole();
+        String userEmailFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+        PlayerRole role = playerFindService.getPlayerByEmail(userEmailFromJWTToken).getRole();
 
         String deleteUserEmail = playerFindService.getPlayerByID(id).getEmail();
 
-        if (!userEmail.equals(deleteUserEmail) && role != PlayerRole.ADMIN) {
+        if (!userEmailFromJWTToken.equals(deleteUserEmail) && role != PlayerRole.ADMIN) {
             throw unauthorized(
                     CustomMessageUtil.PLAYER_IS_NOT_ADMIN,
-                    CustomMessageUtil.PLAYER_EMAIL + userEmail
+                    CustomMessageUtil.PLAYER_EMAIL + userEmailFromJWTToken
             ).get();
         }
 
