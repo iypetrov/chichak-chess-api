@@ -1,5 +1,6 @@
 package com.example.chichakchessapi.app.matchmaking;
 
+import com.example.chichakchessapi.app.engine.PieceColor;
 import com.example.chichakchessapi.app.gameparticipants.GameParticipantService;
 import com.example.chichakchessapi.app.games.GameService;
 import com.example.chichakchessapi.app.games.models.GameModel;
@@ -23,8 +24,8 @@ public class MatchmakingService {
     @Transactional
     public GameModel createMatch(PlayerModel playerOne, PlayerModel playerTwo) {
         GameModel game = gameService.createGame();
-        gameParticipantService.createGameParticipant(game, playerOne);
-        gameParticipantService.createGameParticipant(game, playerTwo);
+        gameParticipantService.createGameParticipant(game, playerOne, PieceColor.WHITE);
+        gameParticipantService.createGameParticipant(game, playerTwo, PieceColor.BLACK);
         gameStateService.createInitGameState(game);
         return game;
     }

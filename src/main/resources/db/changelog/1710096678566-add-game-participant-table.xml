@@ -16,6 +16,9 @@
             <column name="player_id" type="VARCHAR(36)">
                 <constraints nullable="false"/>
             </column>
+            <column name="color" type="VARCHAR(5)">
+                <constraints nullable="false" validateNullable="true"/>
+            </column>
             <column name="is_winner" type="BOOLEAN"/>
             <column name="is_draw" type="BOOLEAN"/>
         </createTable>

@@ -3,6 +3,7 @@ package com.example.chichakchessapi.app.gameparticipants;
 import com.example.chichakchessapi.app.BaseService;
 import com.example.chichakchessapi.app.common.MapperUtil;
 import com.example.chichakchessapi.app.common.PaginationInfo;
+import com.example.chichakchessapi.app.engine.PieceColor;
 import com.example.chichakchessapi.app.gameparticipants.entities.GameParticipantEntity;
 import com.example.chichakchessapi.app.gameparticipants.models.GameParticipantModel;
 import com.example.chichakchessapi.app.games.entities.GameEntity;
@@ -28,12 +29,13 @@ public class GameParticipantService extends BaseService {
         this.gameParticipantSpecification = gameParticipantSpecification;
     }
 
-    public void createGameParticipant(GameModel game, PlayerModel player) {
+    public void createGameParticipant(GameModel game, PlayerModel player, PieceColor color) {
         gameParticipantRepository.save(
                 new GameParticipantEntity(
                         UUID.randomUUID().toString(),
                         mapperUtil.map(game, GameEntity.class),
                         mapperUtil.map(player, PlayerEntity.class),
+                        color,
                         null,
                         null
                 )
