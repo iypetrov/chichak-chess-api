@@ -37,7 +37,7 @@ public class JWTGenerationService extends BaseService {
     }
 
     public Claims extractClaims(String token) {
-        return Jwts.parserBuilder()
+        return Jwts.parser()
                 .setSigningKey(jwtKey)
                 .build()
                 .parseClaimsJws(token)
