@@ -1,5 +1,6 @@
 package com.example.chichakchessapi.app.players;
 
+import com.example.chichakchessapi.app.playerpreferences.PlayerPreferenceMapper;
 import com.example.chichakchessapi.app.players.dtos.PlayerResponseDTO;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
 
@@ -18,7 +19,8 @@ public class PlayerMapper {
                 player.getEmail(),
                 player.getRole().toString(),
                 player.getImageURL(),
-                player.getPoints()
+                player.getPoints(),
+                PlayerPreferenceMapper.convertPlayerPreferenceModelToPlayerPreferenceResponseDTO(player.getPlayerPreference())
         );
     }
 
@@ -31,7 +33,8 @@ public class PlayerMapper {
                                 player.getEmail(),
                                 player.getRole().toString(),
                                 player.getImageURL(),
-                                player.getPoints()
+                                player.getPoints(),
+                                PlayerPreferenceMapper.convertPlayerPreferenceModelToPlayerPreferenceResponseDTO(player.getPlayerPreference())
                         )
                 )
         );
