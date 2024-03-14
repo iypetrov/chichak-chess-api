@@ -65,16 +65,4 @@ public abstract class BaseService {
                 new APIErrorResponse(APIErrorResponseType.WARNING, message, details)
         );
     }
-
-    protected Pageable createPage(Integer pageNumber, Integer pageSize) {
-        if (ObjectUtils.anyNull(pageNumber, pageSize)) {
-            String message = CustomMessageUtil.GENERAL_INFORMATION_NOT_FOUND;
-            String details = String.format("pageNumber:%d pageSize:%d", pageNumber, pageSize);
-            throw new InvalidRequestException(
-                    message,
-                    new APIErrorResponse(APIErrorResponseType.WARNING, message, details)
-            );
-        }
-        return PageRequest.of(pageNumber, pageSize);
-    }
 }
