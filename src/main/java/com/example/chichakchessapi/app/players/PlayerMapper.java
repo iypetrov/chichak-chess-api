@@ -1,5 +1,6 @@
 package com.example.chichakchessapi.app.players;
 
+import com.example.chichakchessapi.app.playerpreferences.PlayerPreferenceMapper;
 import com.example.chichakchessapi.app.players.dtos.PlayerResponseDTO;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
 
@@ -11,27 +12,29 @@ public class PlayerMapper {
         throw new IllegalStateException("Mapper class");
     }
 
-    public static PlayerResponseDTO convertPlayerModelToPlayerResponseDTO(PlayerModel playerModel) {
+    public static PlayerResponseDTO convertPlayerModelToPlayerResponseDTO(PlayerModel player) {
         return new PlayerResponseDTO(
-                playerModel.getId(),
-                playerModel.getNickname(),
-                playerModel.getEmail(),
-                playerModel.getRole(),
-                playerModel.getImageURL(),
-                playerModel.getPoints()
+                player.getId(),
+                player.getNickname(),
+                player.getEmail(),
+                player.getRole().toString(),
+                player.getImageURL(),
+                player.getPoints(),
+                PlayerPreferenceMapper.convertPlayerPreferenceModelToPlayerPreferenceResponseDTO(player.getPlayerPreference())
         );
     }
 
-    public static List<PlayerResponseDTO> convertPlayerModelsToPlayerResponseDTOs(List<PlayerModel> playerModels) {
+    public static List<PlayerResponseDTO> convertPlayerModelsToPlayerResponseDTOs(List<PlayerModel> players) {
         List<PlayerResponseDTO> playerResponseDTOs = new ArrayList<>();
-        playerModels.forEach(playerModel -> playerResponseDTOs.add(
+        players.forEach(player -> playerResponseDTOs.add(
                         new PlayerResponseDTO(
-                                playerModel.getId(),
-                                playerModel.getNickname(),
-                                playerModel.getEmail(),
-                                playerModel.getRole(),
-                                playerModel.getImageURL(),
-                                playerModel.getPoints()
+                                player.getId(),
+                                player.getNickname(),
+                                player.getEmail(),
+                                player.getRole().toString(),
+                                player.getImageURL(),
+                                player.getPoints(),
+                                PlayerPreferenceMapper.convertPlayerPreferenceModelToPlayerPreferenceResponseDTO(player.getPlayerPreference())
                         )
                 )
         );

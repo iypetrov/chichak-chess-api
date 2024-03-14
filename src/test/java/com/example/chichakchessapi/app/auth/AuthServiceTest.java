@@ -21,17 +21,17 @@ class AuthServiceTest {
     void testLoginWithCorrectAndWrongPassword() {
         String originalEmail = "user@gmail.com";
         String originalPassword = "user123";
-        RegisterModel registerModel = new RegisterModel("userDge", originalEmail, originalPassword);
-        LoginModel loginModel = new LoginModel(originalEmail, "wrong");
+        RegisterModel registration = new RegisterModel("userDge", originalEmail, originalPassword);
+        LoginModel login = new LoginModel(originalEmail, "wrong");
 
-        authService.register(registerModel);
+        authService.register(registration);
 
-        assertThrows(UnauthorizedException.class, () -> authService.login(loginModel));
+        assertThrows(UnauthorizedException.class, () -> authService.login(login));
 
-        loginModel.setPassword(originalPassword);
+        login.setPassword(originalPassword);
         assertEquals(
                 originalEmail,
-                authService.login(loginModel).getEmail()
+                authService.login(login).getEmail()
         );
     }
 }

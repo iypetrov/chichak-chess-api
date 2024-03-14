@@ -1,5 +1,7 @@
 package com.example.chichakchessapi.app.players.models;
 
+import com.example.chichakchessapi.app.auth.PlayerRole;
+import com.example.chichakchessapi.app.playerpreferences.models.PlayerPreferenceModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,17 +18,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlayerModel implements UserDetails {
-    String id;
-    String nickname;
-    String email;
-    String role;
-    String imageURL;
-    Integer points;
-    String jwtToken;
+    private String id;
+    private transient PlayerPreferenceModel playerPreference;
+    private String nickname;
+    private String email;
+    private PlayerRole role;
+    private String imageURL;
+    private Integer points;
+    private String jwtToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role));
+        return List.of(new SimpleGrantedAuthority(role.toString()));
     }
 
     @Override

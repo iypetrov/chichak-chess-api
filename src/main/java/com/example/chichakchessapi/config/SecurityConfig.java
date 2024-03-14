@@ -38,7 +38,8 @@ public class SecurityConfig {
                         .configurationSource(request -> {
                             CorsConfiguration corsConfiguration = new CorsConfiguration();
                             corsConfiguration.setAllowedOrigins(List.of(
-                                    "http://localhost:4200"
+                                    "http://localhost:4200",
+                                    "https://chichak-chess"
                             ));
                             corsConfiguration.setAllowedMethods(List.of(
                                     HttpMethod.GET.name(),

@@ -1,6 +1,6 @@
 package com.example.chichakchessapi.app.auth;
 
-import com.example.chichakchessapi.app.players.PlayerService;
+import com.example.chichakchessapi.app.players.PlayerFindService;
 import io.micrometer.common.lang.NonNullApi;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
@@ -20,8 +20,8 @@ import java.util.List;
 @Component
 public class JWTRequestFilter extends OncePerRequestFilter {
     private final List<String> noAuthEndpoints;
-    private final PlayerService playerService;
-    private final AuthService authService;
+    private final PlayerFindService playerFindService;
+    private final JWTGenerationService jwtGenerationService;
 
     @PostConstruct
     private void initializeNoAuthEndpoints() {
@@ -32,16 +32,16 @@ public class JWTRequestFilter extends OncePerRequestFilter {
         noAuthEndpoints.add("/v3/api-docs");
     }
 
-    public JWTRequestFilter(List<String> noAuthEndpoints, PlayerService playerService, AuthService authService) {
+    public JWTRequestFilter(List<String> noAuthEndpoints, PlayerFindService playerFindService, JWTGenerationService jwtGenerationService) {
         this.noAuthEndpoints = noAuthEndpoints;
-        this.playerService = playerService;
-        this.authService = authService;
+        this.playerFindService = playerFindService;
+        this.jwtGenerationService = jwtGenerationService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         boolean doesNeedAuth = noAuthEndpoints.stream()
-                .noneMatch(x -> request.getServletPath().contains(x));
+                .noneMatch(endpoint -> request.getServletPath().contains(endpoint));
 
         if (doesNeedAuth) {
             List<Cookie> cookies = (request.getCookies() != null)
@@ -62,11 +62,11 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                     .findFirst()
                     .map(Cookie::getValue)
                     .orElse("");
-            String userEmail = authService.extractClaims(jwtToken).getSubject();
+            String userEmail = jwtGenerationService.extractClaims(jwtToken).getSubject();
 
-            UserDetails userDetails = playerService.getPlayerByEmail(userEmail);
+            UserDetails userDetails = playerFindService.getPlayerByEmail(userEmail);
 
-            if (!authService.verifyIfJWTTokenIsValid(jwtToken, userDetails)) {
+            if (!jwtGenerationService.verifyIfJWTTokenIsValid(jwtToken, userDetails)) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 response.getWriter().write("Access Forbidden");
                 return;

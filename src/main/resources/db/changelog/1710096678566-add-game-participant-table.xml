@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1710096678566-1" author="ipetrov (generated)">
+        <createTable tableName="game_participant">
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GAME_PARTICIPANT"/>
+            </column>
+            <column name="game_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="player_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="color" type="VARCHAR(5)">
+                <constraints nullable="false" validateNullable="true"/>
+            </column>
+            <column name="is_winner" type="BOOLEAN"/>
+            <column name="is_draw" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1710096678566-2" author="ipetrov (generated)">
+        <addForeignKeyConstraint baseColumnNames="game_id" baseTableName="game_participant"
+                                 constraintName="FK_GAME_PARTICIPANT_ON_GAME" referencedColumnNames="id"
+                                 referencedTableName="game"/>
+    </changeSet>
+    <changeSet id="1710096678566-3" author="ipetrov (generated)">
+        <addForeignKeyConstraint baseColumnNames="player_id" baseTableName="game_participant"
+                                 constraintName="FK_GAME_PARTICIPANT_ON_PLAYER" referencedColumnNames="id"
+                                 referencedTableName="player"/>
+    </changeSet>
+    <changeSet id="1710096678566-4" author="ipetrov (generated)">
+        <createIndex indexName="IDX_GAME_PARTICIPANT_PLAYER_ID" tableName="game_participant">
+            <column name="player_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1710096678566-5" author="ipetrov (generated)">
+        <createIndex indexName="IDX_GAME_PARTICIPANT_GAME_ID" tableName="game_participant">
+            <column name="game_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
