@@ -64,10 +64,24 @@ public class MatchmakingQueueService extends BaseService {
         }
     }
 
+    public void removePlayerFromMatchmaking(String id, String jwtToken) {
+        String userEmailFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+        String userEmail = playerFindService.getPlayerByID(id).getEmail();
+
+        if (!userEmailFromJWTToken.equals(userEmail)) {
+            throw unauthorized(
+                    CustomMessageUtil.GAME_CANNOT_ENROLL_GAME_AS_OTHER_PLAYER,
+                    CustomMessageUtil.PLAYER_EMAIL + userEmailFromJWTToken
+            ).get();
+        }
+
+        removePlayerFromQueue(id);
+    }
+
     public void removePlayerFromQueue(String id) {
         Optional<PlayerModel> player = matchmakingQueue.stream()
-                        .filter(p -> p.getId().equals(id))
-                                .findFirst();
+                .filter(p -> p.getId().equals(id))
+                .findFirst();
         if (player.isPresent()) {
             matchmakingQueue.remove(player.get());
             playerIDsToResultsMatchmaking.remove(id);
