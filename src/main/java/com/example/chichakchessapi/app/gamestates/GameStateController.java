@@ -2,6 +2,7 @@ package com.example.chichakchessapi.app.gamestates;
 
 import com.example.chichakchessapi.app.gamestates.dtos.GameStateResponseDTO;
 import com.example.chichakchessapi.app.gamestates.models.GameStateModel;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,11 @@ public class GameStateController {
     public GameStateController(GameStateService gameStateService) {
         this.gameStateService = gameStateService;
     }
+
+//    @PostConstruct
+//    public ResponseEntity<GameStateResponseDTO> makeTurn() {
+//
+//    }
 
     @GetMapping
     public ResponseEntity<List<GameStateResponseDTO>> getAllByGameID(

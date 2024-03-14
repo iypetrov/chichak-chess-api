@@ -14,6 +14,10 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GameStateModel {
+    public GameStateModel(String fen) {
+        this.id = fen;
+    }
+
     private String id;
     private GameModel game;
     private String boardState;
@@ -22,4 +26,10 @@ public class GameStateModel {
     private Integer fullmoveNumber;
     private Boolean isFinal;
     private Timestamp createdOn;
+
+    // should be extended
+    @Override
+    public String toString() {
+        return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    }
 }
