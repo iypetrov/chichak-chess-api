@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @Service
 public class GamePersistenceBatchQueueService extends BaseService {
-
     private static final int DEFAULT_RETRY_COUNT_PERSISTING_THE_RESULT = 2;
     private static final long DEFAULT_INTERVAL_TO_PERSIST_THE_RESULT = 1107L;
     private final AtomicInteger counterPersistedGameStatesLastMinute = new AtomicInteger(0);
@@ -36,22 +35,26 @@ public class GamePersistenceBatchQueueService extends BaseService {
     // TODO: Add description what would change here in real implementation
     @Retryable(maxAttempts = DEFAULT_RETRY_COUNT_PERSISTING_THE_RESULT)
     @Scheduled(fixedRate = DEFAULT_INTERVAL_TO_PERSIST_THE_RESULT)
-    private void scheduleWithFixedRate() {
+    void scheduleWithFixedRate() {
         isFirstQueueCurrent = !isFirstQueueCurrent;
         if (!isFirstQueueCurrent) {
-            gameStateService.persistMultipleGameStatesInBatches(gameStatesToPersistQueueFirst);
-            counterPersistedGameStatesLastMinute.addAndGet(gameStatesToPersistQueueFirst.size());
-            gameStatesToPersistQueueFirst.clear();
+            if (!gameStatesToPersistQueueFirst.isEmpty()) {
+                gameStateService.persistMultipleGameStatesInBatches(gameStatesToPersistQueueFirst);
+                counterPersistedGameStatesLastMinute.addAndGet(gameStatesToPersistQueueFirst.size());
+                gameStatesToPersistQueueFirst.clear();
+            }
         } else {
-            gameStateService.persistMultipleGameStatesInBatches(gameStatesToPersistQueueSecond);
-            counterPersistedGameStatesLastMinute.addAndGet(gameStatesToPersistQueueSecond.size());
-            gameStatesToPersistQueueSecond.clear();
+            if (!gameStatesToPersistQueueSecond.isEmpty()) {
+                gameStateService.persistMultipleGameStatesInBatches(gameStatesToPersistQueueSecond);
+                counterPersistedGameStatesLastMinute.addAndGet(gameStatesToPersistQueueSecond.size());
+                gameStatesToPersistQueueSecond.clear();
+            }
         }
     }
 
     @Scheduled(cron = "0 * * ? * *")
-    private void logNumberOFPersistedGameStatesLastMinute() {
-        log.info(String.format("%d game states were persisted last minute", counterPersistedGameStatesLastMinute.get()));
+    void logNumberOfPersistedGameStatesLastMinute() {
+        log.info(String.format("%d game states were persisted", counterPersistedGameStatesLastMinute.get()));
         counterPersistedGameStatesLastMinute.set(0);
     }
 
