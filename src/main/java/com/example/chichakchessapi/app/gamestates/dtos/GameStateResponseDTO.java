@@ -4,5 +4,5 @@ import com.example.chichakchessapi.app.games.dtos.GameResponseDTO;
 
 import java.sql.Timestamp;
 
-public record GameStateResponseDTO(String id, GameResponseDTO game, String boardState, String activeColor, Boolean isCastleAvailable, Integer fullmoveNumber, Boolean isFinal, Timestamp createdOn) {
+public record GameStateResponseDTO(String id, GameResponseDTO game, String boardState, String activeColor, String castleAvailability, String enPassantTargetSquare, Integer halfmoveClock, Integer fullmoveNumber, Boolean isFinal, Timestamp createdOn) {
 }

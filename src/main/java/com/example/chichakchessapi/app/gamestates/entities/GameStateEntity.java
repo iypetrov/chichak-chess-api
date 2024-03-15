@@ -20,7 +20,6 @@ import lombok.Setter;
 import java.sql.Timestamp;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -41,8 +40,15 @@ public class GameStateEntity {
     @Column(name = "active_color", nullable = false, updatable = false, length = 5)
     private PieceColor activeColor;
 
-    @Column(name = "is_castle_available", nullable = false, updatable = false)
-    private Boolean isCastleAvailable;
+    @Column(name = "castle_availablility", nullable = false, updatable = false, length = 4)
+    private String castleAvailability;
+
+    @Column(name = "en_passant_target_square", nullable = false, updatable = false, length = 10)
+    private String enPassantTargetSquare;
+
+    @Column(name = "halfmove_clock", nullable = false, updatable = false)
+    @Min(0)
+    private Integer halfmoveClock;
 
     @Column(name = "fullmove_number", nullable = false, updatable = false)
     @Min(value = 0)

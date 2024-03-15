@@ -19,7 +19,13 @@
             <column name="active_color" type="VARCHAR(5)">
                 <constraints nullable="false" validateNullable="true"/>
             </column>
-            <column name="is_castle_available" type="BOOLEAN">
+            <column name="castle_availability" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="en_passant_target_square" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="halfmove_clock" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="fullmove_number" type="INT">

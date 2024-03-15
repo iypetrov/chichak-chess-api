@@ -15,8 +15,6 @@ import java.util.UUID;
 
 import java.util.List;
 
-import static com.example.chichakchessapi.app.engine.ChessStateValidatorService.INIT_BOARD_POSITION;
-
 @Service
 public class GameStateService extends BaseService {
     private final MapperUtil mapperUtil;
@@ -33,10 +31,12 @@ public class GameStateService extends BaseService {
         GameStateModel gameState = new GameStateModel(
                 UUID.randomUUID().toString(),
                 game,
-                INIT_BOARD_POSITION,
+                "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR",
                 PieceColor.WHITE,
-                true,
+                "KQkq",
+                "-",
                 0,
+                1,
                 false,
                 Timestamp.from(Instant.now())
         );

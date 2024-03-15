@@ -49,7 +49,7 @@ public class PlayerService extends BaseService {
         if (playerRepository.findByEmail(playerEntity.getEmail()).isPresent()) {
             throw notSupportedOperation(
                     CustomMessageUtil.PLAYER_ALREADY_EXIST,
-                    CustomMessageUtil.PLAYER_EMAIL + playerEntity.getId()
+                    CustomMessageUtil.PLAYER_ID + playerEntity.getId()
             ).get();
         }
 
@@ -76,15 +76,15 @@ public class PlayerService extends BaseService {
     }
 
     public void deleteUserByUserByID(String id, String jwtToken) {
-        String userEmailFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
-        PlayerRole role = playerFindService.getPlayerByEmail(userEmailFromJWTToken).getRole();
+        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+        PlayerRole role = playerFindService.getPlayerByID(userIDFromJWTToken).getRole();
 
-        String deleteUserEmail = playerFindService.getPlayerByID(id).getEmail();
+        String deleteUserID = playerFindService.getPlayerByID(id).getId();
 
-        if (!userEmailFromJWTToken.equals(deleteUserEmail) && role != PlayerRole.ADMIN) {
+        if (!userIDFromJWTToken.equals(deleteUserID) && role != PlayerRole.ADMIN) {
             throw unauthorized(
                     CustomMessageUtil.PLAYER_IS_NOT_ADMIN,
-                    CustomMessageUtil.PLAYER_EMAIL + userEmailFromJWTToken
+                    CustomMessageUtil.PLAYER_ID + userIDFromJWTToken
             ).get();
         }
 
