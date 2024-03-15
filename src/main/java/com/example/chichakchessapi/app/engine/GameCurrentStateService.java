@@ -37,4 +37,9 @@ public class GameCurrentStateService extends BaseService {
 
         return Optional.of(playerIDsToGameIDs.get(playerID));
     }
+
+    public void removeGameInfoFromCache(String playerID, String gameID) {
+        playerIDsToGameIDs.remove(playerID);
+        gameIDsToLatestGameStates.remove(gameID);
+    }
 }
