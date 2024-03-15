@@ -1,20 +1,25 @@
 package com.example.chichakchessapi.app.gamestates;
 
 import com.example.chichakchessapi.app.BaseService;
+import com.example.chichakchessapi.app.common.CustomMessageUtil;
 import com.example.chichakchessapi.app.common.MapperUtil;
 import com.example.chichakchessapi.app.engine.PieceColor;
 import com.example.chichakchessapi.app.games.models.GameModel;
 import com.example.chichakchessapi.app.gamestates.entities.GameStateEntity;
 import com.example.chichakchessapi.app.gamestates.models.GameStateModel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Queue;
 import java.util.UUID;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class GameStateService extends BaseService {
     private final MapperUtil mapperUtil;
@@ -44,6 +49,20 @@ public class GameStateService extends BaseService {
         gameStateRepository.save(
                 mapperUtil.map(gameState, GameStateEntity.class)
         );
+    }
+
+    @Transactional
+    public void persistMultipleGameStatesInBatches(Queue<GameStateModel> states) {
+        try {
+            gameStateRepository.saveAll(
+                    mapperUtil.map(List.of(states), GameStateEntity.class)
+            );
+        } catch (RuntimeException ex) {
+            log.error(
+                    CustomMessageUtil.GENERAL_PERSISTENCE_OPERATION_FAILED,
+                    ex.getMessage()
+            );
+        }
     }
 
     public List<GameStateModel> getGameStatesByGameID(String gameID) {

@@ -19,6 +19,11 @@ spring:
       ddl-auto: update
     show-sql: false
     open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+        order_inserts: true
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.xml
     enabled: true

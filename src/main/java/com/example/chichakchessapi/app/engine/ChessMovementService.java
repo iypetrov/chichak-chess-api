@@ -80,12 +80,16 @@ public class ChessMovementService extends BaseService {
 
         gameCurrentStateService.addLatestStateToGame(gameMovement.getGameID(), newGameState);
         gameCurrentStateService.addPlayerToInGamePlayersCache(gameMovement.getPlayerID(), gameMovement.getGameID());
-        gamePersistenceBatchQueueService.addElementToPersistantQueue(newGameState);
+        gamePersistenceBatchQueueService.addElementToPersistentQueue(newGameState);
 
         return gameState;
     }
 
     public void surrenderPlayer(String playerID) {
+
+    }
+
+    private void teardownAfterGameEnds(String gameID, String winnerID, String loserID) {
 
     }
 }

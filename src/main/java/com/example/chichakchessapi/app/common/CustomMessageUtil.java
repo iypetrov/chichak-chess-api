@@ -2,6 +2,7 @@ package com.example.chichakchessapi.app.common;
 
 public class CustomMessageUtil {
     public static final String GENERAL_NOT_VALID_UUID = "Provided id is not valid UUID";
+    public static final String GENERAL_PERSISTENCE_OPERATION_FAILED = "Persistence operation failed";
     public static final String GENERAL_PROVIDED_ID = "Provided ID: ";
 
     public static final String PLAYER_DOES_NOT_EXIST = "Player doesn't exist";
