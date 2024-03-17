@@ -2,7 +2,6 @@ package com.example.chichakchessapi.app.playerspointscalculation;
 
 import com.example.chichakchessapi.app.BaseService;
 import com.example.chichakchessapi.app.players.PlayerFindService;
-import com.example.chichakchessapi.app.players.PlayerService;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +11,9 @@ import java.util.List;
 public class PlayersPointsCalculationService extends BaseService {
     public static final Integer INITIAL_PLAYER_POINTS = 500;
 
-    private final PlayerService playerService;
     private final PlayerFindService playerFindService;
 
-    public PlayersPointsCalculationService(PlayerService playerService, PlayerFindService playerFindService) {
-        this.playerService = playerService;
+    public PlayersPointsCalculationService(PlayerFindService playerFindService) {
         this.playerFindService = playerFindService;
     }
 

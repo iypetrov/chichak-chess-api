@@ -31,8 +31,15 @@ public class GamePersistenceBatchQueueService extends BaseService {
         this.gameStateService = gameStateService;
     }
 
-    // TODO: Add description why use 2 queues
-    // TODO: Add description what would change here in real implementation
+    // The reason for using two caches instead of one is to avoid potential issues with flushing
+    // If I used only one cache, there's a chance of encountering this issue:
+    // When I start saving cached results, new events might come in that need to be saved for the next round
+    // If I flush the cache directly in this situation, I could lose these new events received during the saving process
+    // That's why, when I start saving the results, I divert newly received records into a separate cache while I save the results from the previous iteration
+
+    // In a real implementation I would not use in memory message queue, but a distributed one (Kafka, RabbitMQ)
+    // and will send the new state events to other service, which only job is to persist the result
+    // It is possible this new persist service to store all these game states in NoSQL database (MongoDB, Cassandra) for better performance
     @Retryable(maxAttempts = DEFAULT_RETRY_COUNT_PERSISTING_THE_RESULT)
     @Scheduled(fixedRate = DEFAULT_INTERVAL_TO_PERSIST_THE_RESULT)
     void scheduleWithFixedRate() {
@@ -54,7 +61,7 @@ public class GamePersistenceBatchQueueService extends BaseService {
 
     @Scheduled(cron = "0 * * ? * *")
     void logNumberOfPersistedGameStatesLastMinute() {
-        log.info(String.format("%d game states were persisted", counterPersistedGameStatesLastMinute.get()));
+        log.info(String.format("%d game states were persisted in the last minute", counterPersistedGameStatesLastMinute.get()));
         counterPersistedGameStatesLastMinute.set(0);
     }
 

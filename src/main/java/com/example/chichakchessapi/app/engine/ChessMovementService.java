@@ -83,7 +83,14 @@ public class ChessMovementService extends BaseService {
             ).get();
         }
 
-        // TODO: Add description what would change here in real implementation
+        // For the MVP I use this library for the chess logic https://github.com/bhlangonijr/chesslib
+        // The main issue is that it provides a lot of options that are not needed in this project
+        // and that for each new movement I should create a new object Board, which can lead to OutOfMemoryError
+        // In a real implementation I would write custom implementation for chess logic, where I would validate:
+        // - is FEN string valid
+        // - is chess movement is valid
+        // - is FEN string a mate position
+        // - is FEN string a draw position
         Board board = new Board();
         board.loadFromFen(gameState.toString());
 
