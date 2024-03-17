@@ -41,7 +41,7 @@ public class PlayerController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteByID(
             @PathVariable String id,
-            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME, required = false) String jwtToken
+            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME) String jwtToken
     ) {
         playerService.deleteUserByUserByID(id, jwtToken);
         return ResponseEntity.noContent().build();

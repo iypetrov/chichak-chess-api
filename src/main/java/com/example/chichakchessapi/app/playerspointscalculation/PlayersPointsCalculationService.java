@@ -32,5 +32,6 @@ public class PlayersPointsCalculationService extends BaseService {
             loser.setPoints(loserPoints + 10);
             return List.of(winner, loser);
         }
+        return List.of();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.chichakchessapi.app.matchmaking;
 
+import com.example.chichakchessapi.app.engine.GameCurrentStateService;
 import com.example.chichakchessapi.app.engine.PieceColor;
 import com.example.chichakchessapi.app.gameparticipants.GameParticipantService;
 import com.example.chichakchessapi.app.games.GameService;
@@ -14,11 +15,13 @@ public class MatchmakingService {
     private final GameService gameService;
     private final GameParticipantService gameParticipantService;
     private final GameStateService gameStateService;
+    private final GameCurrentStateService gameCurrentStateService;
 
-    public MatchmakingService(GameService gameService, GameParticipantService gameParticipantService, GameStateService gameStateService) {
+    public MatchmakingService(GameService gameService, GameParticipantService gameParticipantService, GameStateService gameStateService, GameCurrentStateService gameCurrentStateService) {
         this.gameService = gameService;
         this.gameParticipantService = gameParticipantService;
         this.gameStateService = gameStateService;
+        this.gameCurrentStateService = gameCurrentStateService;
     }
 
     @Transactional
@@ -27,6 +30,7 @@ public class MatchmakingService {
         gameParticipantService.createGameParticipant(game, playerOne, PieceColor.WHITE);
         gameParticipantService.createGameParticipant(game, playerTwo, PieceColor.BLACK);
         gameStateService.createInitGameState(game);
+        gameCurrentStateService.addGameParticipants(game.getId(), playerOne.getId(), playerTwo.getId());
         return game;
     }
 }
