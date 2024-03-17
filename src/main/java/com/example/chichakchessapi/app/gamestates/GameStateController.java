@@ -26,7 +26,7 @@ public class GameStateController {
     ) {
         List<GameStateModel> gameStates = gameStateService.getGameStatesByGameID(gameID);
         return ResponseEntity.ok().body(
-                GameStateMapper.convertGameModelToGameResponseDTO(gameStates)
+                GameStateMapper.convertGameModelsToGameResponseDTOs(gameStates)
         );
     }
 }

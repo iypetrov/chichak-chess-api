@@ -10,13 +10,16 @@ import com.example.chichakchessapi.app.games.entities.GameEntity;
 import com.example.chichakchessapi.app.games.models.GameModel;
 import com.example.chichakchessapi.app.players.entities.PlayerEntity;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
+import jdk.jfr.Timespan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
+import java.util.List;
 
 @Service
 public class GameParticipantService extends BaseService {
@@ -66,5 +69,20 @@ public class GameParticipantService extends BaseService {
         );
 
         return pageInfo;
+    }
+
+    public List<GameParticipantModel> getAllGameParticipantsByGameID(String gameID) {
+        return mapperUtil.map(gameParticipantRepository.findAllByGameId(gameID), GameParticipantModel.class);
+    }
+
+    @Transactional
+    public void updateMultipleGameParticipants(
+            List<GameParticipantModel> gameParticipants
+    ) {
+        for (GameParticipantModel gp : gameParticipants) {
+            gameParticipantRepository.save(
+                    mapperUtil.map(gp, GameParticipantEntity.class)
+            );
+        }
     }
 }

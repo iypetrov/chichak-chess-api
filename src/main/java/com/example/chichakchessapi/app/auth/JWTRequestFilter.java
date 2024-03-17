@@ -62,9 +62,8 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                     .findFirst()
                     .map(Cookie::getValue)
                     .orElse("");
-            String userEmail = jwtGenerationService.extractClaims(jwtToken).getSubject();
-
-            UserDetails userDetails = playerFindService.getPlayerByEmail(userEmail);
+            String userID = jwtGenerationService.extractClaims(jwtToken).getSubject();
+            UserDetails userDetails = playerFindService.getPlayerByID(userID);
 
             if (!jwtGenerationService.verifyIfJWTTokenIsValid(jwtToken, userDetails)) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);

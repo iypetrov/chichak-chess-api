@@ -51,4 +51,13 @@ public class MatchmakingController {
 
         return resultMatchmaking;
     }
+
+    @PostMapping("/drop/{id}")
+    public ResponseEntity<Void> removePlayerFromQueue(
+            @PathVariable("id") String id,
+            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME) String jwtToken
+    ) {
+        matchmakingQueueService.removePlayerFromMatchmaking(id, jwtToken);
+        return ResponseEntity.noContent().build();
+    }
 }

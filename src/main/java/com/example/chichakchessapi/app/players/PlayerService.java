@@ -7,13 +7,17 @@ import com.example.chichakchessapi.app.auth.models.RegisterModel;
 import com.example.chichakchessapi.app.common.CustomMessageUtil;
 import com.example.chichakchessapi.app.common.MapperUtil;
 import com.example.chichakchessapi.app.common.UUIDUtil;
+import com.example.chichakchessapi.app.gameparticipants.entities.GameParticipantEntity;
+import com.example.chichakchessapi.app.gameparticipants.models.GameParticipantModel;
 import com.example.chichakchessapi.app.playerpreferences.PlayerPreferenceService;
 import com.example.chichakchessapi.app.playerpreferences.entities.PlayerPreferenceEntity;
 import com.example.chichakchessapi.app.players.entities.PlayerEntity;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,7 +53,7 @@ public class PlayerService extends BaseService {
         if (playerRepository.findByEmail(playerEntity.getEmail()).isPresent()) {
             throw notSupportedOperation(
                     CustomMessageUtil.PLAYER_ALREADY_EXIST,
-                    CustomMessageUtil.PLAYER_EMAIL + playerEntity.getId()
+                    CustomMessageUtil.PLAYER_ID + playerEntity.getId()
             ).get();
         }
 
@@ -75,16 +79,27 @@ public class PlayerService extends BaseService {
         return playerEntity.getPassword();
     }
 
+    @Transactional
+    public void updateMultiplePlayers(
+            List<PlayerModel> players
+    ) {
+        for (PlayerModel p : players) {
+            playerRepository.save(
+                    mapperUtil.map(p, PlayerEntity.class)
+            );
+        }
+    }
+
     public void deleteUserByUserByID(String id, String jwtToken) {
-        String userEmailFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
-        PlayerRole role = playerFindService.getPlayerByEmail(userEmailFromJWTToken).getRole();
+        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+        PlayerRole role = playerFindService.getPlayerByID(userIDFromJWTToken).getRole();
 
-        String deleteUserEmail = playerFindService.getPlayerByID(id).getEmail();
+        String deleteUserID = playerFindService.getPlayerByID(id).getId();
 
-        if (!userEmailFromJWTToken.equals(deleteUserEmail) && role != PlayerRole.ADMIN) {
+        if (!userIDFromJWTToken.equals(deleteUserID) && role != PlayerRole.ADMIN) {
             throw unauthorized(
                     CustomMessageUtil.PLAYER_IS_NOT_ADMIN,
-                    CustomMessageUtil.PLAYER_EMAIL + userEmailFromJWTToken
+                    CustomMessageUtil.PLAYER_ID + userIDFromJWTToken
             ).get();
         }
 

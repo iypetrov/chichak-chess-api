@@ -34,12 +34,12 @@ public class PlayerModel implements UserDetails {
 
     @Override
     public String getPassword() {
-        return id;
+        return jwtToken;
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return id;
     }
 
     @Override

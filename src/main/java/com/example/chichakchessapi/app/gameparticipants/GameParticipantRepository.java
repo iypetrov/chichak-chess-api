@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @NonNullApi
 @Repository
 public interface GameParticipantRepository extends JpaRepository<GameParticipantEntity, String>, PagingAndSortingRepository<GameParticipantEntity, String>, JpaSpecificationExecutor<GameParticipantEntity> {
@@ -24,4 +26,6 @@ public interface GameParticipantRepository extends JpaRepository<GameParticipant
             @Nullable Specification<GameParticipantEntity> spec,
             Pageable pageable
     );
+
+    List<GameParticipantEntity> findAllByGameId(String gameID);
 }

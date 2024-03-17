@@ -12,7 +12,22 @@ public class GameStateMapper {
         throw new IllegalStateException("Mapper class");
     }
 
-    public static List<GameStateResponseDTO> convertGameModelToGameResponseDTO(List<GameStateModel> gameStates) {
+    public static GameStateResponseDTO convertGameModelToGameResponseDTO(GameStateModel gameState) {
+        return new GameStateResponseDTO(
+                gameState.getId(),
+                GameMapper.convertGameModelToGameResponseDTO(gameState.getGame()),
+                gameState.getBoardState(),
+                gameState.getActiveColor().toString(),
+                gameState.getCastleAvailability(),
+                gameState.getEnPassantTargetSquare(),
+                gameState.getHalfmoveClock(),
+                gameState.getFullmoveNumber(),
+                gameState.getIsFinal(),
+                gameState.getCreatedOn()
+        );
+    }
+
+    public static List<GameStateResponseDTO> convertGameModelsToGameResponseDTOs(List<GameStateModel> gameStates) {
         List<GameStateResponseDTO> gameStateResponseDTOs = new ArrayList<>();
         gameStates.forEach(gameState -> gameStateResponseDTOs.add(
                         new GameStateResponseDTO(
@@ -20,7 +35,9 @@ public class GameStateMapper {
                                 GameMapper.convertGameModelToGameResponseDTO(gameState.getGame()),
                                 gameState.getBoardState(),
                                 gameState.getActiveColor().toString(),
-                                gameState.getIsCastleAvailable(),
+                                gameState.getCastleAvailability(),
+                                gameState.getEnPassantTargetSquare(),
+                                gameState.getHalfmoveClock(),
                                 gameState.getFullmoveNumber(),
                                 gameState.getIsFinal(),
                                 gameState.getCreatedOn()
