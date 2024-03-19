@@ -66,5 +66,18 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookieAuthToken.toString())
                 .body(PlayerMapper.convertPlayerModelToPlayerResponseDTO(player));
+
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<PlayerResponseDTO> logout() {
+        ResponseCookie cookieWithoutAuthToken = getCookie(
+                AuthService.COOKIE_AUTH_TOKEN_NAME,
+                "",
+                AuthService.TOKEN_VALIDITY_SECS
+        );
+
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, cookieWithoutAuthToken.toString())
+                .build();
     }
 }

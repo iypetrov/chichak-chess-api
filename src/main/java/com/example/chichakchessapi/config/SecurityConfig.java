@@ -42,6 +42,7 @@ public class SecurityConfig {
                                     "https://chichak-chess"
                             ));
                             corsConfiguration.setAllowedMethods(List.of(
+                                    HttpMethod.OPTIONS.name(),
                                     HttpMethod.GET.name(),
                                     HttpMethod.POST.name(),
                                     HttpMethod.PUT.name(),
