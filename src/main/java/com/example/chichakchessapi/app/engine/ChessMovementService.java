@@ -54,13 +54,13 @@ public class ChessMovementService extends BaseService {
 
 
     public GameStateModel addPlayerMovement(GameMovementModel gameMovement, String jwtToken) {
-        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
-        if (!gameMovement.getPlayerID().equals(userIDFromJWTToken)) {
-            throw unauthorized(
-                    CustomMessageUtil.PLAYER_IS_NOT_IN_GAME,
-                    CustomMessageUtil.PLAYER_ID + gameMovement.getPlayerID()
-            ).get();
-        }
+//        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+//        if (!gameMovement.getPlayerID().equals(userIDFromJWTToken)) {
+//            throw unauthorized(
+//                    CustomMessageUtil.PLAYER_IS_NOT_IN_GAME,
+//                    CustomMessageUtil.PLAYER_ID + gameMovement.getPlayerID()
+//            ).get();
+//        }
 
         return executeMovement(gameMovement);
     }
@@ -128,14 +128,14 @@ public class ChessMovementService extends BaseService {
     }
 
     public void surrenderPlayer(String loserID, String jwtToken) {
-        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
-        PlayerModel loser = playerFindService.getPlayerByID(userIDFromJWTToken);
-        if (!loser.getId().equals(userIDFromJWTToken)) {
-            throw unauthorized(
-                    CustomMessageUtil.PLAYER_IS_NOT_IN_GAME,
-                    CustomMessageUtil.PLAYER_ID + loser.getId()
-            ).get();
-        }
+//        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+//        PlayerModel loser = playerFindService.getPlayerByID(userIDFromJWTToken);
+//        if (!loser.getId().equals(userIDFromJWTToken)) {
+//            throw unauthorized(
+//                    CustomMessageUtil.PLAYER_IS_NOT_IN_GAME,
+//                    CustomMessageUtil.PLAYER_ID + loser.getId()
+//            ).get();
+//        }
 
         Optional<String> gameID = gameCurrentStateService.getActiveGameIDOfPlayer(loserID);
         if (gameID.isPresent()) {

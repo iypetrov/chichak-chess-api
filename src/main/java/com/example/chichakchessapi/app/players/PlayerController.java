@@ -40,9 +40,10 @@ public class PlayerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteByID(
-            @PathVariable String id,
-            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME) String jwtToken
+            @PathVariable String id
+//            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME) String jwtToken
     ) {
+        String jwtToken = "";
         playerService.deleteUserByUserByID(id, jwtToken);
         return ResponseEntity.noContent().build();
     }

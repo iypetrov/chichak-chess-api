@@ -25,8 +25,8 @@ public class AuthController {
         return ResponseCookie.from(name, value)
                 .maxAge(maxAgeSeconds)
                 .path("/")
-                .secure(false)
-                .httpOnly(false)
+                .secure(true)
+                .httpOnly(true)
                 .build();
     }
 

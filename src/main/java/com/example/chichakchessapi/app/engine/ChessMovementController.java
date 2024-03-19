@@ -28,9 +28,10 @@ public class ChessMovementController {
 
     @PostMapping("/movement")
     public ResponseEntity<GameStateResponseDTO> makeTurn(
-            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME) String jwtToken,
+//            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME) String jwtToken,
             @RequestBody GameMovementRequestDTO gameMovementRequest
     ) {
+        String jwtToken = "";
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
                         GameStateMapper.convertGameModelToGameResponseDTO(
@@ -58,9 +59,10 @@ public class ChessMovementController {
 
     @PostMapping("/surrender/{id}")
     public ResponseEntity<Void> surrender(
-            @PathVariable String id,
-            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME) String jwtToken
+            @PathVariable String id
+//            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME) String jwtToken
     ) {
+        String jwtToken = "";
         chessMovementService.surrenderPlayer(id, jwtToken);
         return ResponseEntity.noContent().build();
     }

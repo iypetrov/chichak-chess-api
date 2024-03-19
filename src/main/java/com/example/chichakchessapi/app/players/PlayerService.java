@@ -91,17 +91,17 @@ public class PlayerService extends BaseService {
     }
 
     public void deleteUserByUserByID(String id, String jwtToken) {
-        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
-        PlayerRole role = playerFindService.getPlayerByID(userIDFromJWTToken).getRole();
-
-        String deleteUserID = playerFindService.getPlayerByID(id).getId();
-
-        if (!userIDFromJWTToken.equals(deleteUserID) && role != PlayerRole.ADMIN) {
-            throw unauthorized(
-                    CustomMessageUtil.PLAYER_IS_NOT_ADMIN,
-                    CustomMessageUtil.PLAYER_ID + userIDFromJWTToken
-            ).get();
-        }
+//        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+//        PlayerRole role = playerFindService.getPlayerByID(userIDFromJWTToken).getRole();
+//
+//        String deleteUserID = playerFindService.getPlayerByID(id).getId();
+//
+//        if (!userIDFromJWTToken.equals(deleteUserID) && role != PlayerRole.ADMIN) {
+//            throw unauthorized(
+//                    CustomMessageUtil.PLAYER_IS_NOT_ADMIN,
+//                    CustomMessageUtil.PLAYER_ID + userIDFromJWTToken
+//            ).get();
+//        }
 
         Optional<String> playerID = UUIDUtil.convertFromStringToUUID(id);
         if (playerID.isEmpty()) {

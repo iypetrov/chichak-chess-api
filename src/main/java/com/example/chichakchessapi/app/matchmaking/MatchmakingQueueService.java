@@ -37,7 +37,7 @@ public class MatchmakingQueueService extends BaseService {
     }
 
     public void enqueuePlayer(String id, String jwtToken, DeferredResult<ResponseEntity<GameResponseDTO>> resultMatchmaking) {
-        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+//        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
         PlayerModel player = playerFindService.getPlayerByID(id);
 
         Optional<String> gameID = gameCurrentStateService.getActiveGameIDOfPlayer(player.getId());
@@ -48,12 +48,12 @@ public class MatchmakingQueueService extends BaseService {
            ).get();
         }
 
-        if (!userIDFromJWTToken.equals(player.getId())) {
-            throw unauthorized(
-                    CustomMessageUtil.GAME_CANNOT_ENROLL_GAME_AS_OTHER_PLAYER,
-                    CustomMessageUtil.PLAYER_ID + userIDFromJWTToken
-            ).get();
-        }
+//        if (!userIDFromJWTToken.equals(player.getId())) {
+//            throw unauthorized(
+//                    CustomMessageUtil.GAME_CANNOT_ENROLL_GAME_AS_OTHER_PLAYER,
+//                    CustomMessageUtil.PLAYER_ID + userIDFromJWTToken
+//            ).get();
+//        }
 
         PlayerModel playerModel = playerFindService.getPlayerByID(id);
         matchmakingQueue.add(playerModel);
@@ -75,15 +75,15 @@ public class MatchmakingQueueService extends BaseService {
     }
 
     public void removePlayerFromMatchmaking(String id, String jwtToken) {
-        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
-        String userID = playerFindService.getPlayerByID(id).getId();
-
-        if (!userIDFromJWTToken.equals(userID)) {
-            throw unauthorized(
-                    CustomMessageUtil.GAME_CANNOT_ENROLL_GAME_AS_OTHER_PLAYER,
-                    CustomMessageUtil.PLAYER_ID + userIDFromJWTToken
-            ).get();
-        }
+//        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+//        String userID = playerFindService.getPlayerByID(id).getId();
+//
+//        if (!userIDFromJWTToken.equals(userID)) {
+//            throw unauthorized(
+//                    CustomMessageUtil.GAME_CANNOT_ENROLL_GAME_AS_OTHER_PLAYER,
+//                    CustomMessageUtil.PLAYER_ID + userIDFromJWTToken
+//            ).get();
+//        }
 
         removePlayerFromQueue(id);
     }
