@@ -21,13 +21,40 @@ public class SecurityConfig {
     @Profile("dev")
     public SecurityFilterChain localFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors
+                        .configurationSource(request -> {
+                            CorsConfiguration corsConfiguration = new CorsConfiguration();
+                            corsConfiguration.setAllowedOrigins(List.of(
+                                    "http://localhost:4200"
+                            ));
+                            corsConfiguration.setAllowedMethods(List.of(
+                                    HttpMethod.OPTIONS.name(),
+                                    HttpMethod.GET.name(),
+                                    HttpMethod.POST.name(),
+                                    HttpMethod.PUT.name(),
+                                    HttpMethod.PATCH.name(),
+                                    HttpMethod.DELETE.name()
+                            ));
+                            corsConfiguration.setAllowedHeaders(List.of(
+                                    "*"
+                            ));
+                            corsConfiguration.setAllowCredentials(true);
+                            return corsConfiguration;
+                        })
+                )
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers("/**")
+                )
                 .authorizeHttpRequests(request -> request
-                        .anyRequest().permitAll()
+                        .requestMatchers("/**").permitAll()
+                )
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
 
         return http.build();
+
     }
 
     @Bean
@@ -38,7 +65,6 @@ public class SecurityConfig {
                         .configurationSource(request -> {
                             CorsConfiguration corsConfiguration = new CorsConfiguration();
                             corsConfiguration.setAllowedOrigins(List.of(
-                                    "http://localhost:4200",
                                     "https://chichak-chess"
                             ));
                             corsConfiguration.setAllowedMethods(List.of(
