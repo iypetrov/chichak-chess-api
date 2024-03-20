@@ -27,8 +27,8 @@ public class MatchmakingService {
     @Transactional
     public GameModel createMatch(PlayerModel playerOne, PlayerModel playerTwo) {
         GameModel game = gameService.createGame();
-        gameParticipantService.createGameParticipant(game, playerOne, PieceColor.WHITE);
-        gameParticipantService.createGameParticipant(game, playerTwo, PieceColor.BLACK);
+        gameParticipantService.createGameParticipant(game, playerOne, playerTwo, PieceColor.WHITE);
+        gameParticipantService.createGameParticipant(game, playerTwo, playerOne, PieceColor.BLACK);
         gameStateService.createInitGameState(game);
         gameCurrentStateService.addGameParticipants(game.getId(), playerOne.getId(), playerTwo.getId());
         return game;

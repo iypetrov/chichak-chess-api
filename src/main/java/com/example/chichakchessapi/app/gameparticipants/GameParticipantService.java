@@ -37,12 +37,13 @@ public class GameParticipantService extends BaseService {
         this.gameParticipantSpecification = gameParticipantSpecification;
     }
 
-    public void createGameParticipant(GameModel game, PlayerModel player, PieceColor color) {
+    public void createGameParticipant(GameModel game, PlayerModel player, PlayerModel opponent, PieceColor color) {
         gameParticipantRepository.save(
                 new GameParticipantEntity(
                         UUID.randomUUID().toString(),
                         mapperUtil.map(game, GameEntity.class),
                         mapperUtil.map(player, PlayerEntity.class),
+                        mapperUtil.map(opponent, PlayerEntity.class),
                         color,
                         null,
                         null
