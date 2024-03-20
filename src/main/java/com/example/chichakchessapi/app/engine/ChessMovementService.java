@@ -75,7 +75,7 @@ public class ChessMovementService extends BaseService {
         }
 
         Optional<String> activeGameIDOfPlayer = gameCurrentStateService.getActiveGameIDOfPlayer(gameMovement.getPlayerID());
-        if (activeGameIDOfPlayer.isEmpty() || !activeGameIDOfPlayer.get().equals(gameMovement.getPlayerID())
+        if (activeGameIDOfPlayer.isEmpty() || !activeGameIDOfPlayer.get().equals(gameMovement.getGameID())
         ) {
             throw notFound(
                     CustomMessageUtil.PLAYER_IS_NOT_IN_GAME,
@@ -119,7 +119,6 @@ public class ChessMovementService extends BaseService {
             teardownAfterGameEnds(newGameState, participants.get(0), participants.get(1), true);
         } else {
             gameCurrentStateService.addLatestStateToGame(gameMovement.getGameID(), newGameState);
-            gameCurrentStateService.addPlayerToInGamePlayersCache(gameMovement.getPlayerID(), gameMovement.getGameID());
         }
 
         gamePersistenceBatchQueueService.addElementToPersistentQueue(newGameState);

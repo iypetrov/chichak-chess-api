@@ -15,13 +15,35 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("game-participants")
+@RequestMapping("/game-participants")
 public class GameParticipantController {
     private final GameParticipantService gameParticipantService;
 
     public GameParticipantController(GameParticipantService gameParticipantService) {
         this.gameParticipantService = gameParticipantService;
     }
+
+    @GetMapping("/player")
+    public ResponseEntity<GameParticipantResponseDTO> getPlayerParticipantByGameIDAndPlayerID(
+            @Nullable @RequestParam() String playerID,
+            @Nullable @RequestParam() String gameID
+    ) {
+        PaginationInfo<GameParticipantModel> gameParticipants = gameParticipantService.getGameParticipantsByPlayerAndGameID(
+                playerID,
+                gameID
+        );
+
+        List<GameParticipantResponseDTO> gameParticipantResponses =  GameParticipantMapper.convertGameParticipantModelsToGameParticipantResponseDTOs(
+                gameParticipants.getPage()
+        );
+
+        if (gameParticipantResponses.isEmpty()) {
+            return ResponseEntity.ok().body(new GameParticipantResponseDTO(null, null, null, null, null, null, null));
+        }
+
+        return ResponseEntity.ok().body(gameParticipantResponses.get(0));
+    }
+
 
     @GetMapping
     public ResponseEntity<List<GameParticipantResponseDTO>> getAllByCriteria(

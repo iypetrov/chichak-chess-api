@@ -51,6 +51,25 @@ public class GameParticipantService extends BaseService {
         );
     }
 
+    public PaginationInfo<GameParticipantModel> getGameParticipantsByPlayerAndGameID(
+            String playerID,
+            String gameID
+    ) {
+        Pageable pageable = PageRequest.of(0, 1);
+        Specification<GameParticipantEntity> spec = Specification
+                .where(gameParticipantSpecification.playerEquals(playerID))
+                .and(gameParticipantSpecification.gameEquals(gameID));
+
+        Page<GameParticipantEntity> gameParticipants = gameParticipantRepository.findAll(spec, pageable);
+        PaginationInfo<GameParticipantModel> pageInfo = new PaginationInfo<>();
+        pageInfo.setPage(
+                mapperUtil.map(gameParticipants.getContent(), GameParticipantModel.class)
+        );
+
+        return pageInfo;
+    }
+
+
     public PaginationInfo<GameParticipantModel> getAllGameParticipantsByCriteria(
             String playerID,
             String gameID,

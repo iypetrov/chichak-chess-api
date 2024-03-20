@@ -7,7 +7,3 @@ spring:
     username: admin
     password: admin
     show-sql: true
-  jpa:
-    properties:
-      hibernate:
-        generate_statistics: true
