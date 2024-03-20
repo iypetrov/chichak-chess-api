@@ -65,10 +65,10 @@ public class GameStateService extends BaseService {
         }
     }
 
-    public List<GameStateModel> getGameStatesByGameID(String gameID) {
+    public GameStateModel getGameStatesByGameID(String gameID) {
         Specification<GameStateEntity> spec = Specification
                 .where(gameStateSpecification.gameEquals(gameID));
         List<GameStateEntity> gameStates = gameStateRepository.findAll(spec);
-        return mapperUtil.map(gameStates, GameStateModel.class);
+        return mapperUtil.map(gameStates.get(0), GameStateModel.class);
     }
 }
