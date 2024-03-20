@@ -37,16 +37,17 @@ public class MatchmakingQueueService extends BaseService {
     }
 
     public void enqueuePlayer(String id, String jwtToken, DeferredResult<ResponseEntity<GameResponseDTO>> resultMatchmaking) {
-//        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
-        PlayerModel player = playerFindService.getPlayerByID(id);
+        try {
+//            String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+            PlayerModel player = playerFindService.getPlayerByID(id);
 
-        Optional<String> gameID = gameCurrentStateService.getActiveGameIDOfPlayer(player.getId());
-        if (gameID.isPresent()) {
-           throw invalidRequest(
-                   CustomMessageUtil.PLAYER_IS_ALREADY_IN_GAME,
-                   CustomMessageUtil.GAME_ID + gameID.get()
-           ).get();
-        }
+            Optional<String> gameID = gameCurrentStateService.getActiveGameIDOfPlayer(player.getId());
+            if (gameID.isPresent()) {
+                throw invalidRequest(
+                        CustomMessageUtil.PLAYER_IS_ALREADY_IN_GAME,
+                        CustomMessageUtil.GAME_ID + gameID.get()
+                ).get();
+            }
 
 //        if (!userIDFromJWTToken.equals(player.getId())) {
 //            throw unauthorized(
@@ -55,22 +56,25 @@ public class MatchmakingQueueService extends BaseService {
 //            ).get();
 //        }
 
-        PlayerModel playerModel = playerFindService.getPlayerByID(id);
-        matchmakingQueue.add(playerModel);
-        playerIDsToResultsMatchmaking.put(id, resultMatchmaking);
+            PlayerModel playerModel = playerFindService.getPlayerByID(id);
+            matchmakingQueue.add(playerModel);
+            playerIDsToResultsMatchmaking.put(id, resultMatchmaking);
 
-        if (matchmakingQueue.size() >= 2) {
-            PlayerModel playerOne = matchmakingQueue.pollFirst();
-            PlayerModel playerTwo = matchmakingQueue.pollFirst();
+            if (matchmakingQueue.size() >= 2) {
+                PlayerModel playerOne = matchmakingQueue.pollFirst();
+                PlayerModel playerTwo = matchmakingQueue.pollFirst();
 
-            GameResponseDTO game = GameMapper.convertGameModelToGameResponseDTO(
-                    matchmakingService.createMatch(playerOne, playerTwo)
-            );
-            playerIDsToResultsMatchmaking.get(playerOne.getId()).setResult(ResponseEntity.status(HttpStatus.CREATED).body(game));
-            playerIDsToResultsMatchmaking.get(playerTwo.getId()).setResult(ResponseEntity.status(HttpStatus.CREATED).body(game));
+                GameResponseDTO game = GameMapper.convertGameModelToGameResponseDTO(
+                        matchmakingService.createMatch(playerOne, playerTwo)
+                );
+                playerIDsToResultsMatchmaking.get(playerOne.getId()).setResult(ResponseEntity.status(HttpStatus.CREATED).body(game));
+                playerIDsToResultsMatchmaking.get(playerTwo.getId()).setResult(ResponseEntity.status(HttpStatus.CREATED).body(game));
 
-            playerIDsToResultsMatchmaking.remove(playerOne.getId());
-            playerIDsToResultsMatchmaking.remove(playerTwo.getId());
+                playerIDsToResultsMatchmaking.remove(playerOne.getId());
+                playerIDsToResultsMatchmaking.remove(playerTwo.getId());
+            }
+        } catch (Exception ex) {
+           removePlayerFromMatchmaking(id, "");
         }
     }
 
