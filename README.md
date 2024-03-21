@@ -71,6 +71,7 @@ On this way I guarantee that no information about game states will be lost. Also
 only job will be to process and persist these states (this means that the only responsibility of the current service 
 will be to send an event to the Kafka topic with the information about the new state). This new service can store the states
 in a database that is better for storing of metric data (for relational database - TimescaleDB or for NoSQL - Cassandra).
+- Will write a custom implementation of chess logic, that will process the new movements more effectively.
 
 ### When You Run The API Locally
 You should create a `.env` file in the project's root directory. This is example content:
