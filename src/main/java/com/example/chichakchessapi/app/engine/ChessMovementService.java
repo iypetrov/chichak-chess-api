@@ -14,6 +14,7 @@ import com.example.chichakchessapi.app.players.models.PlayerModel;
 import com.example.chichakchessapi.app.playerspointscalculation.PlayersPointsCalculationService;
 import com.github.bhlangonijr.chesslib.Board;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -136,7 +137,7 @@ public class ChessMovementService extends BaseService {
         return gameState;
     }
 
-    public void surrenderPlayer(String loserID, String jwtToken) {
+    public GameStateModel surrenderPlayer(String loserID, String jwtToken) {
 //        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
 //        PlayerModel loser = playerFindService.getPlayerByID(userIDFromJWTToken);
 //        if (!loser.getId().equals(userIDFromJWTToken)) {
@@ -147,8 +148,9 @@ public class ChessMovementService extends BaseService {
 //        }
 
         Optional<String> gameID = gameCurrentStateService.getActiveGameIDOfPlayer(loserID);
+        GameStateModel latestGameState = new GameStateModel();
         if (gameID.isPresent()) {
-            GameStateModel latestGameState = gameCurrentStateService.getLatestGameStateByGameID(gameID.get()).get();
+            latestGameState = gameCurrentStateService.getLatestGameStateByGameID(gameID.get()).get();
             List<String> participants = gameCurrentStateService.getGameParticipantIDsFromGame(gameID.get());
             if (!participants.contains(loserID)) {
                 throw notFound(
@@ -166,22 +168,16 @@ public class ChessMovementService extends BaseService {
                         CustomMessageUtil.PLAYER_ID + loserID
                 ).get();
             }
+            latestGameState.setId(UUID.randomUUID().toString());
             latestGameState.setIsFinal(true);
             teardownAfterGameEnds(latestGameState, winnerID.get(), loserID, false);
         }
+        return latestGameState;
     }
 
     private void teardownAfterGameEnds(GameStateModel gameState, String winnerID, String loserID, boolean isDraw) {
         // clear cache & send the final state
         gameState.setIsFinal(true);
-        gameCurrentStateService.removeGameInfoFromCache(
-                winnerID,
-                gameState.getGame().getId()
-        );
-        gameCurrentStateService.removeGameInfoFromCache(
-                loserID,
-                gameState.getGame().getId()
-        );
 
         // save the result for winner/loser
         List<GameParticipantModel> gameParticipants = gameParticipantService.getAllGameParticipantsByGameID(
@@ -198,6 +194,17 @@ public class ChessMovementService extends BaseService {
         playerService.updateMultiplePlayers(
                 playersPointsCalculationService.updatePointsPlayersAfterGame(winnerID, loserID, isDraw)
         );
+
+        gameCurrentStateService.removeGameInfoFromCache(
+                winnerID,
+                gameState.getGame().getId()
+        );
+        gameCurrentStateService.removeGameInfoFromCache(
+                loserID,
+                gameState.getGame().getId()
+        );
+
+        gamePersistenceBatchQueueService.addElementToPersistentQueue(gameState);
     }
 
     private void setResultEndGameForPlayer(
@@ -210,12 +217,7 @@ public class ChessMovementService extends BaseService {
                 .filter(gp -> gp.getPlayer().getId().equals(playerID))
                 .findFirst()
                 .ifPresent(playerState -> {
-                            if (isDraw) {
-                                playerState.setIsWinner(isWinner);
-                            } else {
-                                playerState.setIsWinner(false);
-                            }
-
+                            playerState.setIsWinner(isWinner);
                             playerState.setIsDraw(isDraw);
                         }
                 );

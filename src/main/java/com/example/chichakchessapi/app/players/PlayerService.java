@@ -83,10 +83,10 @@ public class PlayerService extends BaseService {
     public void updateMultiplePlayers(
             List<PlayerModel> players
     ) {
-        for (PlayerModel p : players) {
-            playerRepository.save(
-                    mapperUtil.map(p, PlayerEntity.class)
-            );
+        for (PlayerModel player : players) {
+            PlayerEntity playerEntity = mapperUtil.map(player, PlayerEntity.class);
+            playerEntity.setPassword(getPlayersEncodedPasswordByID(player.getId()));
+            playerRepository.save(playerEntity);
         }
     }
 

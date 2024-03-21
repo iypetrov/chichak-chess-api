@@ -39,10 +39,10 @@ public class GamePersistenceBatchQueueService extends BaseService {
 
     // In a real implementation I would not use in memory message queue, but a distributed one (Kafka, RabbitMQ)
     // and will send the new state events to other service, which only job is to persist the result
-    // It is possible this new persist service to store all these game states in NoSQL database (MongoDB, Cassandra) for better performance
+    // It is possible this new persist service to store all these game states in NoSQL database (MongoDB, Cassandra) for better performance or in some more powerful relational database like TimescaleDB
     @Retryable(maxAttempts = DEFAULT_RETRY_COUNT_PERSISTING_THE_RESULT)
     @Scheduled(fixedRate = DEFAULT_INTERVAL_TO_PERSIST_THE_RESULT)
-    void scheduleWithFixedRate() {
+    void persistLatestGameStates() {
         isFirstQueueCurrent = !isFirstQueueCurrent;
         if (!isFirstQueueCurrent) {
             if (!gameStatesToPersistQueueFirst.isEmpty()) {
