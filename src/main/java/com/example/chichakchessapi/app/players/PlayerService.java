@@ -83,25 +83,25 @@ public class PlayerService extends BaseService {
     public void updateMultiplePlayers(
             List<PlayerModel> players
     ) {
-        for (PlayerModel p : players) {
-            playerRepository.save(
-                    mapperUtil.map(p, PlayerEntity.class)
-            );
+        for (PlayerModel player : players) {
+            PlayerEntity playerEntity = mapperUtil.map(player, PlayerEntity.class);
+            playerEntity.setPassword(getPlayersEncodedPasswordByID(player.getId()));
+            playerRepository.save(playerEntity);
         }
     }
 
     public void deleteUserByUserByID(String id, String jwtToken) {
-        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
-        PlayerRole role = playerFindService.getPlayerByID(userIDFromJWTToken).getRole();
-
-        String deleteUserID = playerFindService.getPlayerByID(id).getId();
-
-        if (!userIDFromJWTToken.equals(deleteUserID) && role != PlayerRole.ADMIN) {
-            throw unauthorized(
-                    CustomMessageUtil.PLAYER_IS_NOT_ADMIN,
-                    CustomMessageUtil.PLAYER_ID + userIDFromJWTToken
-            ).get();
-        }
+//        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+//        PlayerRole role = playerFindService.getPlayerByID(userIDFromJWTToken).getRole();
+//
+//        String deleteUserID = playerFindService.getPlayerByID(id).getId();
+//
+//        if (!userIDFromJWTToken.equals(deleteUserID) && role != PlayerRole.ADMIN) {
+//            throw unauthorized(
+//                    CustomMessageUtil.PLAYER_IS_NOT_ADMIN,
+//                    CustomMessageUtil.PLAYER_ID + userIDFromJWTToken
+//            ).get();
+//        }
 
         Optional<String> playerID = UUIDUtil.convertFromStringToUUID(id);
         if (playerID.isEmpty()) {

@@ -21,12 +21,12 @@ public class GameStateController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GameStateResponseDTO>> getAllByGameID(
+    public ResponseEntity<GameStateResponseDTO> getAllByGameID(
             @NotNull @RequestParam String gameID
     ) {
-        List<GameStateModel> gameStates = gameStateService.getGameStatesByGameID(gameID);
+        GameStateModel gameState = gameStateService.getGameStatesByGameID(gameID);
         return ResponseEntity.ok().body(
-                GameStateMapper.convertGameModelsToGameResponseDTOs(gameStates)
+                GameStateMapper.convertGameModelToGameResponseDTO(gameState)
         );
     }
 }

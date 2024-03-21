@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -21,27 +20,14 @@ public class SecurityConfig {
     @Profile("dev")
     public SecurityFilterChain localFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request
-                        .anyRequest().permitAll()
-                );
-
-        return http.build();
-    }
-
-    @Bean
-    @Profile("!dev")
-    public SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
-        http
                 .cors(cors -> cors
                         .configurationSource(request -> {
                             CorsConfiguration corsConfiguration = new CorsConfiguration();
                             corsConfiguration.setAllowedOrigins(List.of(
-                                    "http://localhost:4200",
-                                    "https://chichak-chess"
+                                    "http://localhost:4200"
                             ));
                             corsConfiguration.setAllowedMethods(List.of(
+                                    HttpMethod.OPTIONS.name(),
                                     HttpMethod.GET.name(),
                                     HttpMethod.POST.name(),
                                     HttpMethod.PUT.name(),
@@ -57,6 +43,45 @@ public class SecurityConfig {
                 )
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers("/**")
+                )
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/**").permitAll()
+                )
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
+
+        return http.build();
+
+    }
+
+    @Bean
+    @Profile("!dev")
+    public SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors
+                        .configurationSource(request -> {
+                            CorsConfiguration corsConfiguration = new CorsConfiguration();
+                            corsConfiguration.setAllowedOrigins(List.of(
+                                    "https://chichak-chess"
+                            ));
+                            corsConfiguration.setAllowedMethods(List.of(
+                                    HttpMethod.OPTIONS.name(),
+                                    HttpMethod.GET.name(),
+                                    HttpMethod.POST.name(),
+                                    HttpMethod.PUT.name(),
+                                    HttpMethod.PATCH.name(),
+                                    HttpMethod.DELETE.name()
+                            ));
+                            corsConfiguration.setAllowedHeaders(List.of(
+                                    "*"
+                            ));
+                            corsConfiguration.setAllowCredentials(true);
+                            return corsConfiguration;
+                        })
+                )
+                .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/**")
                 )
                 .authorizeHttpRequests(request -> request

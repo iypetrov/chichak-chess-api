@@ -20,6 +20,7 @@ import lombok.Setter;
 import java.sql.Timestamp;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -40,7 +41,7 @@ public class GameStateEntity {
     @Column(name = "active_color", nullable = false, updatable = false, length = 5)
     private PieceColor activeColor;
 
-    @Column(name = "castle_availablility", nullable = false, updatable = false, length = 4)
+    @Column(name = "castle_availability", nullable = false, updatable = false, length = 4)
     private String castleAvailability;
 
     @Column(name = "en_passant_target_square", nullable = false, updatable = false, length = 10)

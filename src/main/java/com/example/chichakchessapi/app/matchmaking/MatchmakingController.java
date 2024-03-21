@@ -28,9 +28,10 @@ public class MatchmakingController {
 
     @PostMapping("/enroll/{id}")
     public DeferredResult<ResponseEntity<GameResponseDTO>> enrollPlayer(
-            @PathVariable("id") String id,
-            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME) String jwtToken
+            @PathVariable("id") String id
+//            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME) String jwtToken
     ) {
+        String jwtToken = "";
         DeferredResult<ResponseEntity<GameResponseDTO>> resultMatchmaking = new DeferredResult<>(6000000L);
         ForkJoinPool.commonPool().submit(() -> matchmakingQueueService.enqueuePlayer(id, jwtToken, resultMatchmaking));
 
@@ -54,9 +55,10 @@ public class MatchmakingController {
 
     @PostMapping("/drop/{id}")
     public ResponseEntity<Void> removePlayerFromQueue(
-            @PathVariable("id") String id,
-            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME) String jwtToken
+            @PathVariable("id") String id
+//            @CookieValue(name = COOKIE_AUTH_TOKEN_NAME) String jwtToken
     ) {
+        String jwtToken = "";
         matchmakingQueueService.removePlayerFromMatchmaking(id, jwtToken);
         return ResponseEntity.noContent().build();
     }

@@ -14,6 +14,7 @@ import jdk.jfr.Timespan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,12 +38,13 @@ public class GameParticipantService extends BaseService {
         this.gameParticipantSpecification = gameParticipantSpecification;
     }
 
-    public void createGameParticipant(GameModel game, PlayerModel player, PieceColor color) {
+    public void createGameParticipant(GameModel game, PlayerModel player, PlayerModel opponent, PieceColor color) {
         gameParticipantRepository.save(
                 new GameParticipantEntity(
                         UUID.randomUUID().toString(),
                         mapperUtil.map(game, GameEntity.class),
                         mapperUtil.map(player, PlayerEntity.class),
+                        mapperUtil.map(opponent, PlayerEntity.class),
                         color,
                         null,
                         null
@@ -50,13 +52,32 @@ public class GameParticipantService extends BaseService {
         );
     }
 
+    public PaginationInfo<GameParticipantModel> getGameParticipantsByPlayerAndGameID(
+            String playerID,
+            String gameID
+    ) {
+        Pageable pageable = PageRequest.of(0, 1);
+        Specification<GameParticipantEntity> spec = Specification
+                .where(gameParticipantSpecification.playerEquals(playerID))
+                .and(gameParticipantSpecification.gameEquals(gameID));
+
+        Page<GameParticipantEntity> gameParticipants = gameParticipantRepository.findAll(spec, pageable);
+        PaginationInfo<GameParticipantModel> pageInfo = new PaginationInfo<>();
+        pageInfo.setPage(
+                mapperUtil.map(gameParticipants.getContent(), GameParticipantModel.class)
+        );
+
+        return pageInfo;
+    }
+
+
     public PaginationInfo<GameParticipantModel> getAllGameParticipantsByCriteria(
             String playerID,
             String gameID,
             Integer pageNumber,
             Integer pageSize
     ) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("game.finishedOn").descending());
         Specification<GameParticipantEntity> spec = Specification
                 .where(gameParticipantSpecification.finishedGames())
                 .and(gameParticipantSpecification.playerEquals(playerID))

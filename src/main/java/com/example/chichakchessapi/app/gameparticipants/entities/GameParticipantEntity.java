@@ -43,6 +43,10 @@ public class GameParticipantEntity {
     @JoinColumn(name = "player_id", referencedColumnName = "id", nullable = false, updatable = false)
     private PlayerEntity player;
 
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "opponent_id", referencedColumnName = "id", nullable = false, updatable = false)
+    private PlayerEntity opponent;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "color", nullable = false, updatable = false, length = 5)
     private PieceColor color;

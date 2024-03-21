@@ -16,6 +16,7 @@ public class GameParticipantModel {
     private String id;
     private GameModel game;
     private PlayerModel player;
+    private PlayerModel opponent;
     private PieceColor color;
     private Boolean isWinner;
     private Boolean isDraw;

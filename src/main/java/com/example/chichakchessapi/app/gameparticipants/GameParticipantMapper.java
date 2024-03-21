@@ -18,6 +18,7 @@ public class GameParticipantMapper {
                                 gameParticipant.getId(),
                                 gameParticipant.getGame().getId(),
                                 gameParticipant.getPlayer().getId(),
+                                gameParticipant.getOpponent().getId(),
                                 gameParticipant.getColor().toString(),
                                 gameParticipant.getIsWinner(),
                                 gameParticipant.getIsDraw()

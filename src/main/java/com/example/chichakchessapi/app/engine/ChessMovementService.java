@@ -14,6 +14,7 @@ import com.example.chichakchessapi.app.players.models.PlayerModel;
 import com.example.chichakchessapi.app.playerspointscalculation.PlayersPointsCalculationService;
 import com.github.bhlangonijr.chesslib.Board;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -54,19 +55,19 @@ public class ChessMovementService extends BaseService {
 
 
     public GameStateModel addPlayerMovement(GameMovementModel gameMovement, String jwtToken) {
-        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
-        if (!gameMovement.getPlayerID().equals(userIDFromJWTToken)) {
-            throw unauthorized(
-                    CustomMessageUtil.PLAYER_IS_NOT_IN_GAME,
-                    CustomMessageUtil.PLAYER_ID + gameMovement.getPlayerID()
-            ).get();
-        }
+//        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+//        if (!gameMovement.getPlayerID().equals(userIDFromJWTToken)) {
+//            throw unauthorized(
+//                    CustomMessageUtil.PLAYER_IS_NOT_IN_GAME,
+//                    CustomMessageUtil.PLAYER_ID + gameMovement.getPlayerID()
+//            ).get();
+//        }
 
         return executeMovement(gameMovement);
     }
 
     private GameStateModel executeMovement(GameMovementModel gameMovement) {
-        GameStateModel gameState = gameCurrentStateService.getLatestGameStateByGameID(gameMovement.getGameID());
+        GameStateModel gameState = gameCurrentStateService.getLatestGameStateByGameID(gameMovement.getGameID()).get();
         if (Objects.isNull(gameState)) {
             throw notFound(
                     CustomMessageUtil.GAME_DOES_NOT_EXIST,
@@ -74,8 +75,9 @@ public class ChessMovementService extends BaseService {
             ).get();
         }
 
+        // TODO: Change validation based on value in cookie, not by the player id in the request
         Optional<String> activeGameIDOfPlayer = gameCurrentStateService.getActiveGameIDOfPlayer(gameMovement.getPlayerID());
-        if (activeGameIDOfPlayer.isEmpty() || !activeGameIDOfPlayer.get().equals(gameMovement.getPlayerID())
+        if (activeGameIDOfPlayer.isEmpty() || !activeGameIDOfPlayer.get().equals(gameMovement.getGameID())
         ) {
             throw notFound(
                     CustomMessageUtil.PLAYER_IS_NOT_IN_GAME,
@@ -83,7 +85,23 @@ public class ChessMovementService extends BaseService {
             ).get();
         }
 
-        // TODO: Add description what would change here in real implementation
+        // TODO: Change validation based on value in cookie, not by the player id in the request
+        Optional<String> playerColor = gameCurrentStateService.getPlayerColorOfActiveGame(gameMovement.getPlayerID());
+        if (playerColor.isEmpty() || !gameState.getActiveColor().toString().equals(playerColor.get())) {
+            throw invalidRequest(
+                    CustomMessageUtil.PLAYER_TRIES_TO_MAKE_MOVEMENT_WHEN_IT_IS_NOT_HIS_TURN,
+                    CustomMessageUtil.PLAYER_ID + gameMovement.getPlayerID()
+            ).get();
+        }
+
+        // For the MVP I use this library for the chess logic https://github.com/bhlangonijr/chesslib
+        // The main issue is that it provides a lot of options that are not needed in this project
+        // and that for each new movement I should create a new object Board, which can lead to OutOfMemoryError
+        // In a real implementation I would write custom implementation for chess logic, where I would validate only:
+        // - is FEN string valid
+        // - is chess movement is valid
+        // - is FEN string a mate position
+        // - is FEN string a draw position
         Board board = new Board();
         board.loadFromFen(gameState.toString());
 
@@ -112,7 +130,6 @@ public class ChessMovementService extends BaseService {
             teardownAfterGameEnds(newGameState, participants.get(0), participants.get(1), true);
         } else {
             gameCurrentStateService.addLatestStateToGame(gameMovement.getGameID(), newGameState);
-            gameCurrentStateService.addPlayerToInGamePlayersCache(gameMovement.getPlayerID(), gameMovement.getGameID());
         }
 
         gamePersistenceBatchQueueService.addElementToPersistentQueue(newGameState);
@@ -120,19 +137,20 @@ public class ChessMovementService extends BaseService {
         return gameState;
     }
 
-    public void surrenderPlayer(String loserID, String jwtToken) {
-        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
-        PlayerModel loser = playerFindService.getPlayerByID(userIDFromJWTToken);
-        if (!loser.getId().equals(userIDFromJWTToken)) {
-            throw unauthorized(
-                    CustomMessageUtil.PLAYER_IS_NOT_IN_GAME,
-                    CustomMessageUtil.PLAYER_ID + loser.getId()
-            ).get();
-        }
+    public GameStateModel surrenderPlayer(String loserID, String jwtToken) {
+//        String userIDFromJWTToken = jwtGenerationService.extractClaims(jwtToken).getSubject();
+//        PlayerModel loser = playerFindService.getPlayerByID(userIDFromJWTToken);
+//        if (!loser.getId().equals(userIDFromJWTToken)) {
+//            throw unauthorized(
+//                    CustomMessageUtil.PLAYER_IS_NOT_IN_GAME,
+//                    CustomMessageUtil.PLAYER_ID + loser.getId()
+//            ).get();
+//        }
 
         Optional<String> gameID = gameCurrentStateService.getActiveGameIDOfPlayer(loserID);
+        GameStateModel latestGameState = new GameStateModel();
         if (gameID.isPresent()) {
-            GameStateModel latestGameState = gameCurrentStateService.getLatestGameStateByGameID(gameID.get());
+            latestGameState = gameCurrentStateService.getLatestGameStateByGameID(gameID.get()).get();
             List<String> participants = gameCurrentStateService.getGameParticipantIDsFromGame(gameID.get());
             if (!participants.contains(loserID)) {
                 throw notFound(
@@ -150,22 +168,16 @@ public class ChessMovementService extends BaseService {
                         CustomMessageUtil.PLAYER_ID + loserID
                 ).get();
             }
+            latestGameState.setId(UUID.randomUUID().toString());
             latestGameState.setIsFinal(true);
             teardownAfterGameEnds(latestGameState, winnerID.get(), loserID, false);
         }
+        return latestGameState;
     }
 
     private void teardownAfterGameEnds(GameStateModel gameState, String winnerID, String loserID, boolean isDraw) {
         // clear cache & send the final state
         gameState.setIsFinal(true);
-        gameCurrentStateService.removeGameInfoFromCache(
-                winnerID,
-                gameState.getGame().getId()
-        );
-        gameCurrentStateService.removeGameInfoFromCache(
-                loserID,
-                gameState.getGame().getId()
-        );
 
         // save the result for winner/loser
         List<GameParticipantModel> gameParticipants = gameParticipantService.getAllGameParticipantsByGameID(
@@ -182,6 +194,17 @@ public class ChessMovementService extends BaseService {
         playerService.updateMultiplePlayers(
                 playersPointsCalculationService.updatePointsPlayersAfterGame(winnerID, loserID, isDraw)
         );
+
+        gameCurrentStateService.removeGameInfoFromCache(
+                winnerID,
+                gameState.getGame().getId()
+        );
+        gameCurrentStateService.removeGameInfoFromCache(
+                loserID,
+                gameState.getGame().getId()
+        );
+
+        gamePersistenceBatchQueueService.addElementToPersistentQueue(gameState);
     }
 
     private void setResultEndGameForPlayer(
@@ -194,12 +217,7 @@ public class ChessMovementService extends BaseService {
                 .filter(gp -> gp.getPlayer().getId().equals(playerID))
                 .findFirst()
                 .ifPresent(playerState -> {
-                            if (isDraw) {
-                                playerState.setIsWinner(isWinner);
-                            } else {
-                                playerState.setIsWinner(false);
-                            }
-
+                            playerState.setIsWinner(isWinner);
                             playerState.setIsDraw(isDraw);
                         }
                 );
