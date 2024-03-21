@@ -9,11 +9,9 @@ import com.example.chichakchessapi.app.games.models.GameModel;
 import com.example.chichakchessapi.app.gamestates.GameStateService;
 import com.example.chichakchessapi.app.gamestates.models.GameStateModel;
 import com.example.chichakchessapi.app.players.models.PlayerModel;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 public class MatchmakingService {
     private final MapperUtil mapperUtil;
@@ -40,10 +38,9 @@ public class MatchmakingService {
                 game.getId(),
                 mapperUtil.map(gameState, GameStateModel.class)
         );
-        log.info(gameCurrentStateService.getLatestGameStateByGameID(game.getId()).getId());
         gameCurrentStateService.addGameParticipants(game.getId(), playerOne.getId(), playerTwo.getId());
-        gameCurrentStateService.addPlayerToInGamePlayersCache(playerOne.getId(), game.getId());
-        gameCurrentStateService.addPlayerToInGamePlayersCache(playerTwo.getId(), game.getId());
+        gameCurrentStateService.addPlayerToInGamePlayersCache(playerOne.getId(), game.getId(), PieceColor.WHITE);
+        gameCurrentStateService.addPlayerToInGamePlayersCache(playerTwo.getId(), game.getId(), PieceColor.BLACK);
         return game;
     }
 }

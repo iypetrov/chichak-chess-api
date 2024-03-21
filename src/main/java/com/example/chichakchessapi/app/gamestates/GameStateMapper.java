@@ -6,6 +6,7 @@ import com.example.chichakchessapi.app.gamestates.models.GameStateModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GameStateMapper {
     private GameStateMapper() {
@@ -17,7 +18,7 @@ public class GameStateMapper {
                 gameState.getId(),
                 GameMapper.convertGameModelToGameResponseDTO(gameState.getGame()),
                 gameState.getBoardState(),
-                gameState.getActiveColor().toString(),
+                Objects.isNull(gameState.getActiveColor()) ? null : gameState.getActiveColor().toString(),
                 gameState.getCastleAvailability(),
                 gameState.getEnPassantTargetSquare(),
                 gameState.getHalfmoveClock(),

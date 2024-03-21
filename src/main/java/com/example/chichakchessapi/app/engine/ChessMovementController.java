@@ -3,6 +3,7 @@ package com.example.chichakchessapi.app.engine;
 import com.example.chichakchessapi.app.engine.dtos.GameMovementRequestDTO;
 import com.example.chichakchessapi.app.gamestates.GameStateMapper;
 import com.example.chichakchessapi.app.gamestates.dtos.GameStateResponseDTO;
+import com.example.chichakchessapi.app.gamestates.models.GameStateModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 import static com.example.chichakchessapi.app.auth.AuthService.COOKIE_AUTH_TOKEN_NAME;
 
@@ -49,11 +52,15 @@ public class ChessMovementController {
     public ResponseEntity<GameStateResponseDTO> getLatestGameState(
             @PathVariable String id
     ) {
+
+        Optional<GameStateModel> latestGameState = gameCurrentStateService.getLatestGameStateByGameID(id);
+        if (latestGameState.isEmpty()) {
+            latestGameState = Optional.of(new GameStateModel());
+        }
+
         return ResponseEntity.ok()
                 .body(
-                        GameStateMapper.convertGameModelToGameResponseDTO(
-                                gameCurrentStateService.getLatestGameStateByGameID(id)
-                        )
+                        GameStateMapper.convertGameModelToGameResponseDTO(latestGameState.get())
                 );
     }
 

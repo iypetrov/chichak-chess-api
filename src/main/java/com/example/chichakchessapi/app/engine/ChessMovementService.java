@@ -66,7 +66,7 @@ public class ChessMovementService extends BaseService {
     }
 
     private GameStateModel executeMovement(GameMovementModel gameMovement) {
-        GameStateModel gameState = gameCurrentStateService.getLatestGameStateByGameID(gameMovement.getGameID());
+        GameStateModel gameState = gameCurrentStateService.getLatestGameStateByGameID(gameMovement.getGameID()).get();
         if (Objects.isNull(gameState)) {
             throw notFound(
                     CustomMessageUtil.GAME_DOES_NOT_EXIST,
@@ -74,6 +74,7 @@ public class ChessMovementService extends BaseService {
             ).get();
         }
 
+        // TODO: Change validation based on value in cookie, not by the player id in the request
         Optional<String> activeGameIDOfPlayer = gameCurrentStateService.getActiveGameIDOfPlayer(gameMovement.getPlayerID());
         if (activeGameIDOfPlayer.isEmpty() || !activeGameIDOfPlayer.get().equals(gameMovement.getGameID())
         ) {
@@ -83,10 +84,19 @@ public class ChessMovementService extends BaseService {
             ).get();
         }
 
+        // TODO: Change validation based on value in cookie, not by the player id in the request
+        Optional<String> playerColor = gameCurrentStateService.getPlayerColorOfActiveGame(gameMovement.getPlayerID());
+        if (playerColor.isEmpty() || !gameState.getActiveColor().toString().equals(playerColor.get())) {
+            throw invalidRequest(
+                    CustomMessageUtil.PLAYER_TRIES_TO_MAKE_MOVEMENT_WHEN_IT_IS_NOT_HIS_TURN,
+                    CustomMessageUtil.PLAYER_ID + gameMovement.getPlayerID()
+            ).get();
+        }
+
         // For the MVP I use this library for the chess logic https://github.com/bhlangonijr/chesslib
         // The main issue is that it provides a lot of options that are not needed in this project
         // and that for each new movement I should create a new object Board, which can lead to OutOfMemoryError
-        // In a real implementation I would write custom implementation for chess logic, where I would validate:
+        // In a real implementation I would write custom implementation for chess logic, where I would validate only:
         // - is FEN string valid
         // - is chess movement is valid
         // - is FEN string a mate position
@@ -138,7 +148,7 @@ public class ChessMovementService extends BaseService {
 
         Optional<String> gameID = gameCurrentStateService.getActiveGameIDOfPlayer(loserID);
         if (gameID.isPresent()) {
-            GameStateModel latestGameState = gameCurrentStateService.getLatestGameStateByGameID(gameID.get());
+            GameStateModel latestGameState = gameCurrentStateService.getLatestGameStateByGameID(gameID.get()).get();
             List<String> participants = gameCurrentStateService.getGameParticipantIDsFromGame(gameID.get());
             if (!participants.contains(loserID)) {
                 throw notFound(

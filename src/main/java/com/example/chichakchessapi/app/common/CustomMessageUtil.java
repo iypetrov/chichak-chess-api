@@ -11,6 +11,7 @@ public class CustomMessageUtil {
     public static final String PLAYER_IS_ALREADY_IN_GAME = "Player is already in game, player can be max at one game at the time";
     public static final String PLAYER_WRONG_PASSWORD = "Wrong password";
     public static final String PLAYER_IS_NOT_IN_GAME = "Player doesn't take part in the provided game";
+    public static final String PLAYER_TRIES_TO_MAKE_MOVEMENT_WHEN_IT_IS_NOT_HIS_TURN = "Player tries to make a turn, when it is not his turn";
     public static final String PLAYER_ALONE_IN_GAME = "Player is alone in game";
     public static final String PLAYER_ID = "Player ID: ";
     public static final String PLAYER_EMAIL = "Player email: ";
